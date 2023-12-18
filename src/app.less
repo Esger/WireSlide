@@ -1,11 +1,22 @@
 :root {
-    --blockSize: 10vmin;
+    --blockSize     : 10vmin;
+    --darkBackground: #111;
 }
 
-h1 {
-    color: green;
+body {
+    background-color: var(--darkBackground);
+    display         : flex;
+    flex-direction  : column;
+    align-items     : center;
+    justify-content : center;
+    height          : 100dvh;
+}
 
-    span {
-        color: crimson;
-    }
+header {
+    margin-bottom: auto;
+    color        : azure;
+}
+
+footer {
+    margin-top: auto;
 }
