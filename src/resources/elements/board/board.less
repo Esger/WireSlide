@@ -9,6 +9,10 @@ board {
     width       : var(--boardSize);
     flex        : 0 0 var(--boardSize);
 
+    &.size--4 {
+        --boardSize: calc(4 * var(--blockSize) + 3 * var(--gapSize));
+    }
+
     &.size--5 {
         --boardSize: calc(5 * var(--blockSize) + 4 * var(--gapSize));
     }
