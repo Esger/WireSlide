@@ -1,5 +1,7 @@
 block {
     --blockColor              : var(--lightColor);
+    --ledColor                : green;
+    --ledHighlightColor       : lighten(green, 50%);
     --blueMantleColor         : #0f66a3;
     --copperColor             : #c06205;
     --mantleColor             : var(--blueMantleColor);
@@ -28,7 +30,14 @@ block {
         rotate         : 0deg;
     }
 
-    // &.east-west {}
+    &.empty {
+        background-color: #0000;
+        box-shadow      : none;
+
+        .wire {
+            display: none;
+        }
+    }
 
     &.north-south {
         .rotator {
@@ -132,6 +141,38 @@ block {
     &.south-west {
         .wire--elbow {
             --pos: at 0 100%;
+        }
+    }
+
+    &.led {
+        background-color: #333;
+        box-shadow      : none;
+
+        .wire--full,
+        .wire--rotated {
+            display: none;
+        }
+
+        .wire.wire--elbow {
+            display         : block;
+            flex            : 0 0 calc(var(--blockSize)*0.5);
+            height          : calc(var(--blockSize)*.5);
+            border-radius   : 1in;
+            background-image: radial-gradient(var(--ledHighlightColor) 5%, var(--ledColor) 90%, #0000 0);
+        }
+
+        &.live {
+            background-color: #111;
+
+            .wire.wire--elbow {
+                background-image: radial-gradient(var(--ledHighlightColor) 35%, var(--ledColor) 90%, #0000 0);
+                box-shadow      : 0 0 calc(var(--blockSize)*.4) 0 var(--ledColor),
+                    0 0 calc(var(--blockSize)*0.6) 0 var(--ledHighlightColor),
+                    0 0 calc(var(--blockSize)*.5) 0 var(--ledHighlightColor),
+                    0 0 calc(var(--blockSize)*0.4) 0 var(--ledHighlightColor),
+                    0 0 calc(var(--blockSize)*.3) 0 var(--ledHighlightColor),
+                    0 0 calc(var(--blockSize)*0.2) 0 var(--ledHighlightColor);
+            }
         }
     }
 }

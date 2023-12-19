@@ -3,15 +3,7 @@
     <require from="elements/block/block"></require>
     <require from="elements/block/block"></require>
 
-    <block repeat.for="block of blocks"></block>
-
-    <!-- <block class="east-west"></block>
-    <block class="north-south"></block>
-    <block class="east-west live"></block>
-    <block class="north-west"></block>
-    <block class="north-west live"></block>
-    <block class="north-east"></block>
-    <block class="south-east"></block>
-    <block class="south-west live"></block> -->
+    <block repeat.for="block of blocks"
+           block.bind="block"></block>
 
 </template>

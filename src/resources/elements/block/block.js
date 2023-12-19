@@ -1,9 +1,9 @@
 import { bindable } from 'aurelia-framework';
 
 export class BlockCustomElement {
-    @bindable value;
+    @bindable block;
 
-    valueChanged(newValue, oldValue) {
-        //
+    toggleLive() {
+        this.block.live = !this.block.live;
     }
 }

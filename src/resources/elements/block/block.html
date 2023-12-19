@@ -1,4 +1,5 @@
-<template>
+<template class="${block.type} ${block.live ? 'live' : ''}"
+          click.trigger="toggleLive()">
     <require from="./block.css"></require>
     <div class="rotator">
 
