@@ -67,6 +67,15 @@ block {
         }
     }
 
+    &[class*=south]:not(.north-south) {
+        .wire--rotated {
+            left     : 50%;
+            translate: -50% 0;
+            display  : block;
+            clip-path: inset(-1vmin 6.2vmin -1vmin 0);
+        }
+    }
+
     &[class*=west]:not(.east-west) {
         .wire--full {
             top      : 50%;
@@ -80,7 +89,6 @@ block {
             top      : 50%;
             translate: 0 -50%;
             clip-path: inset(-1vmin 0 -1vmin 6.2vmin);
-
         }
     }
 
@@ -96,7 +104,7 @@ block {
             position        : absolute;
             inset           : calc(var(--blockSize) / -20) var(--mantleLength);
             border-radius   : calc(0.03 * var(--blockSize));
-            background-image: linear-gradient(to bottom, var(--mantleColor), var(--blueMantleHighlightColor) 33%, var(--mantleColor) 90%);
+            background-image: linear-gradient(to bottom, var(--mantleColor), var(--blueMantleHighlightColor) 50%, var(--mantleColor));
         }
 
         &.wire--elbow {
@@ -104,14 +112,26 @@ block {
             width           : calc(0.36 * var(--blockSize));
             flex            : 0 0 calc(0.35 * var(--blockSize));
             border-radius   : 0;
-            background-image: radial-gradient(at 0 0, var(--mantleColor), var(--blueMantleHighlightColor) 23.5%, var(--mantleColor) 70%, #0000 0);
+            background-image: radial-gradient(var(--pos, at 0 0), var(--mantleColor), var(--blueMantleHighlightColor) 35%, var(--mantleColor) 70.5%, #0000 0);
             z-index         : 1;
         }
     }
 
     &.north-east {
         .wire--elbow {
-            background-image: radial-gradient(at 100% 0, var(--mantleColor), var(--blueMantleHighlightColor) 23.5%, var(--mantleColor) 70%, #0000 0);
+            --pos: at 100% 0;
+        }
+    }
+
+    &.south-east {
+        .wire--elbow {
+            --pos: at 100% 100%;
+        }
+    }
+
+    &.south-west {
+        .wire--elbow {
+            --pos: at 0 100%;
         }
     }
 }
