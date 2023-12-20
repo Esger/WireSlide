@@ -46,7 +46,6 @@ export class Board {
                 const block = {
                     x: j,
                     y: i,
-                    order: i * this.boardSize + j,
                     type: type,
                     live: false,
                     isNeighbour: (x, y) => {
