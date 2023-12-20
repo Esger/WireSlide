@@ -3,10 +3,8 @@ block {
     --ledColor                : green;
     --ledHighlightColor       : lighten(green, 50%);
     --blueMantleColor         : #0f66a3;
-    --copperColor             : #c06205;
     --mantleColor             : var(--blueMantleColor);
     --blueMantleHighlightColor: lighten(#0f66a3, 50%);
-    --copperHighlightColor    : lighten(#c06205, 50%);
     --wireLength              : calc(0.9 * var(--blockSize));
     --mantleLength            : calc(var(--blockSize) / 12);
     position                  : absolute;
@@ -24,7 +22,6 @@ block {
     &.live {
         --wireLength  : var(--blockSize);
         --mantleLength: calc(var(--blockSize) / 9);
-        --copperColor : mix(#c06205, yellow, 40%);
     }
 
     .rotator {

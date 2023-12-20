@@ -1,9 +1,17 @@
 board {
-    --blockSize : 10vmin;
-    position    : relative;
-    aspect-ratio: 1;
-    width       : var(--boardSize);
-    flex        : 0 0 var(--boardSize);
+    --blockSize           : 10vmin;
+    --copperColor         : #c06205;
+    --copperHighlightColor: lighten(#c06205, 50%);
+    display               : flex;
+    flex-direction        : column;
+    justify-content       : space-between;
+    position              : relative;
+    aspect-ratio          : 1;
+    flex                  : 0 0 var(--boardSize);
+
+    .live {
+        --copperColor: mix(#c06205, yellow, 40%);
+    }
 
     &.size--4 {
         --boardSize: calc(4 * var(--blockSize));
@@ -11,5 +19,20 @@ board {
 
     &.size--5 {
         --boardSize: calc(5 * var(--blockSize));
+    }
+
+    >.wire {
+        background-image: linear-gradient(to bottom, var(--copperColor), var(--copperHighlightColor) 50%, var(--copperColor) 100%);
+        height          : calc(var(--blockSize) * 0.25);
+        margin-top      : calc(var(--blockSize) * -0.25);
+        color           : var(--copperColor);
+        font-size       : 3em;
+        line-height     : calc(var(--blockSize) * .25);
+        display         : flex;
+        justify-content : space-around;
+
+        ~.wire {
+            margin-bottom: calc(var(--blockSize) * -0.25);
+        }
     }
 }
