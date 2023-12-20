@@ -65,6 +65,6 @@ export class Board {
         do {
             randomIndex2 = (Math.floor(Math.random() * this.blocks.length));
         } while (randomIndex == randomIndex2)
-        this.blocks[randomIndex2].type = 'led';
+        this.blocks[randomIndex2].type += ' led';
     }
 }
