@@ -13,7 +13,8 @@ export class Board {
     }
 
     attached() {
-        this.fillBoard();
+        this._fillBoard();
+        this._connectTopBlocks();
         this.switchSubscription = this._eventAggregator.subscribe('toEmpty', block => {
             this._switchBlocks(block);
         })
@@ -21,6 +22,14 @@ export class Board {
 
     detached() {
         this.switchSubscription.dispose();
+    }
+
+    _connectTopBlocks() {
+        // check top row blocks for connection with live wire
+        for (let i = 0; i < this.boardSize; i++) {
+            const block = this.blocks[i];
+            block.live = block.type.includes('north')
+        }
     }
 
     _switchBlocks(block) {
@@ -39,7 +48,7 @@ export class Board {
         }
     }
 
-    fillBoard() {
+    _fillBoard() {
         for (let i = 0; i < this.boardSize; i++) {
             for (let j = 0; j < this.boardSize; j++) {
                 const type = this.types[Math.floor(Math.random() * this.types.length)];

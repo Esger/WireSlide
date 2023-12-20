@@ -144,9 +144,10 @@ block {
         }
 
         .wire {
-            height                : calc(var(--blockSize)*0.10);
             --copperColor         : silver;
             --copperHighlightColor: lighten(silver, 50%);
+            height                : calc(var(--blockSize)*0.10);
+            border-radius         : 0;
 
             &.wire--elbow {
                 display         : block;
