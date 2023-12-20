@@ -13,8 +13,7 @@ export class Board {
     }
 
     attached() {
-        this._fillBoard();
-        this._connectTopBlocks();
+        this._newGame();
         this.switchSubscription = this._eventAggregator.subscribe('toEmpty', block => {
             this._switchBlocks(block);
         })
@@ -24,11 +23,23 @@ export class Board {
         this.switchSubscription.dispose();
     }
 
+    _newGame() {
+        this._fillBoard();
+        this._connectTopBlocks();
+    }
+
     _connectTopBlocks() {
         // check top row blocks for connection with live wire
-        for (let i = 0; i < this.boardSize; i++) {
-            const block = this.blocks[i];
-            block.live = block.type.includes('north')
+        const topRowBlocks = this.blocks.filter(block => block.y == 0);
+        for (const block of topRowBlocks) {
+            setTimeout(_ => {
+                block.live = block.type.includes('north');
+            }, 300);
+        }
+        // other blocks not live
+        const otherBlocks = this.blocks.filter(block => block.y > 0);
+        for (const block of otherBlocks) {
+            block.live = false;
         }
     }
 
@@ -46,6 +57,7 @@ export class Board {
             block.y = tempBlock.y;
             block.setPosition();
         }
+        this._connectTopBlocks();
     }
 
     _fillBoard() {
