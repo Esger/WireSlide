@@ -22,6 +22,13 @@ export class BlockCustomElement {
             left: 'calc(' + this.block.x + ' * ' + blockSize + ')',
             top: 'calc(' + this.block.y + ' * ' + blockSize + ')'
         }
+        if (this.block.y == 0) {
+            setTimeout(() => {
+                this.block.live = this.block.type.includes('north');
+            }, 300);
+        } else {
+            this.block.live = false;
+        }
     }
 
     toggleLive() {

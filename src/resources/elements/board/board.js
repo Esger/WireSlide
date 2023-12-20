@@ -25,22 +25,6 @@ export class Board {
 
     _newGame() {
         this._fillBoard();
-        this._connectTopBlocks();
-    }
-
-    _connectTopBlocks() {
-        // check top row blocks for connection with live wire
-        const topRowBlocks = this.blocks.filter(block => block.y == 0);
-        for (const block of topRowBlocks) {
-            setTimeout(_ => {
-                block.live = block.type.includes('north');
-            }, 300);
-        }
-        // other blocks not live
-        const otherBlocks = this.blocks.filter(block => block.y > 0);
-        for (const block of otherBlocks) {
-            block.live = false;
-        }
     }
 
     _switchBlocks(block) {
@@ -57,7 +41,6 @@ export class Board {
             block.y = tempBlock.y;
             block.setPosition();
         }
-        this._connectTopBlocks();
     }
 
     _fillBoard() {
