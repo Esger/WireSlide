@@ -1,5 +1,5 @@
 <template class="${block.type} ${block.live ? 'live' : ''}"
-          css.bind="{left : block.x * 10 + 'vmin', top : block.y * 10 + 'vmin'}"
+          css.bind="position"
           click.trigger="toEmpty()">
     <require from="./block.css"></require>
     <div class="rotator">

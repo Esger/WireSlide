@@ -32,8 +32,10 @@ export class Board {
             };
             emptyBlock.x = block.x;
             emptyBlock.y = block.y;
+            emptyBlock.setPosition();
             block.x = tempBlock.x;
             block.y = tempBlock.y;
+            block.setPosition();
         }
     }
 
