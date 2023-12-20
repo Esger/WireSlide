@@ -18,10 +18,9 @@ export class BlockCustomElement {
     _setPosition() {
         const boardStyles = window.getComputedStyle(this._element.parentElement);
         const blockSize = boardStyles.getPropertyValue('--blockSize');
-        const gapSize = boardStyles.getPropertyValue('--gapSize');
         this.position = {
-            left: 'calc(' + this.block.x + ' * ' + blockSize + ' + ' + (this.block.x - 1) + ' * ' + gapSize + ')',
-            top: 'calc(' + this.block.y + ' * ' + blockSize + ' + ' + (this.block.y - 1) + ' * ' + gapSize + ')'
+            left: 'calc(' + this.block.x + ' * ' + blockSize + ')',
+            top: 'calc(' + this.block.y + ' * ' + blockSize + ')'
         }
     }
 

@@ -1,17 +1,15 @@
 board {
     --blockSize : 10vmin;
-    --gapSize   : .2vmin;
     position    : relative;
     aspect-ratio: 1;
-    gap         : var(--gapSize);
     width       : var(--boardSize);
     flex        : 0 0 var(--boardSize);
 
     &.size--4 {
-        --boardSize: calc(4 * var(--blockSize) + 3 * var(--gapSize));
+        --boardSize: calc(4 * var(--blockSize));
     }
 
     &.size--5 {
-        --boardSize: calc(5 * var(--blockSize) + 4 * var(--gapSize));
+        --boardSize: calc(5 * var(--blockSize));
     }
 }
