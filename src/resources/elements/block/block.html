@@ -1,4 +1,4 @@
-<template class="${block.type} ${block.live ? 'live' : ''}"
+<template class="${block.type} ${block.live ? 'live' : ''} ${block.led ? 'led' : ''} ${block.empty ? 'empty' : ''}"
           css.bind="position"
           click.trigger="toEmpty()">
     <require from="./block.css"></require>

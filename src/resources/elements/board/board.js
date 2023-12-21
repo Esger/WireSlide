@@ -25,10 +25,13 @@ export class Board {
 
     _newGame() {
         this._fillBoard();
+        setTimeout(_ => {
+            this._buildConnections();
+        });
     }
 
     _switchBlocks(block) {
-        const emptyBlock = this.blocks.find(b => b.type == 'empty');
+        const emptyBlock = this.blocks.find(b => b.empty);
         if (block.isNeighbour(emptyBlock.x, emptyBlock.y)) {
             const tempBlock = {
                 x: emptyBlock.x,
@@ -41,6 +44,16 @@ export class Board {
             block.y = tempBlock.y;
             block.setPosition();
         }
+        this._buildConnections();
+    }
+
+    _buildConnections() {
+        this.blocks.forEach(block => {
+            block.live = false;
+        });
+        this.blocks.forEach(block => {
+            block.connectIfTopRow();
+        });
     }
 
     _fillBoard() {
@@ -51,24 +64,19 @@ export class Board {
                     x: j,
                     y: i,
                     type: type,
-                    live: false,
-                    isNeighbour: (x, y) => {
-                        if (x < 0 || x >= this.boardSize || y < 0 || y >= this.boardSize) return false;
-                        const isNeighbour = block.y == y && Math.abs(block.x - x) < 2 || block.x == x && Math.abs(block.y - y) < 2;
-                        return isNeighbour;
-                    }
+                    id: i * this.boardSize + j,
                 };
                 this.blocks.push(block);
             }
         }
         // set type of one random block to 'empty'
         const randomIndex = Math.floor(Math.random() * this.blocks.length);
-        this.blocks[randomIndex].type = 'empty';
+        this.blocks[randomIndex].empty = true;
         // set type of one random block to 'led'; index should be different from 'empty'
         let randomIndex2;
         do {
             randomIndex2 = (Math.floor(Math.random() * this.blocks.length));
         } while (randomIndex == randomIndex2)
-        this.blocks[randomIndex2].type += ' led';
+        this.blocks[randomIndex2].led = true;
     }
 }
