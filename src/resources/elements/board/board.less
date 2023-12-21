@@ -1,16 +1,23 @@
 board {
-    --blockSize           : 10vmin;
-    --copperColor         : #c06205;
-    --copperHighlightColor: lighten(#c06205, 50%);
-    display               : flex;
-    flex-direction        : column;
-    justify-content       : space-between;
-    position              : relative;
-    aspect-ratio          : 1;
-    flex                  : 0 0 var(--boardSize);
+    --blockCount             : 4;
+    // --maxBlockSize        : 200px; // min(200px, 20vmin);
+    // --blockSize           : min(calc(90vmin / var(--blockCount)), var(--maxBlockSize));
+    --blockSize              : clamp(10vmin, calc(90vmin / var(--blockCount)), 200px);
+    --copperColor            : #c06205;
+    --copperHighlightColor   : lighten(#c06205, 50%);
+    display                  : flex;
+    flex-direction           : column;
+    justify-content          : space-between;
+    position                 : relative;
+    aspect-ratio             : 1;
+    flex                     : 0 0 var(--boardSize);
 
     .live {
         --copperColor: mix(#c06205, yellow, 40%);
+    }
+
+    &.size--3 {
+        --boardSize: calc(3 * var(--blockSize));
     }
 
     &.size--4 {

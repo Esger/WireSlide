@@ -1,13 +1,14 @@
 import { bindable, inject } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 
-@inject(EventAggregator)
+@inject(Element, EventAggregator)
 export class Board {
     @bindable value;
 
-    constructor(eventAggregator) {
+    constructor(element, eventAggregator) {
+        this._element = element;
         this._eventAggregator = eventAggregator;
-        this.boardSize = 4;
+        this._firstBoardSize = 4;
         this.blocks = [];
         this.types = ['north-south', 'east-west', 'north-east', 'north-west', 'south-east', 'south-west', 'north-south'];
     }
@@ -24,6 +25,9 @@ export class Board {
     }
 
     _newGame() {
+        this.boardSize = this._firstBoardSize;
+        this._element.style.setProperty('--blockCount', this.boardSize);
+
         this._fillBoard();
         setTimeout(_ => {
             this._buildConnections();

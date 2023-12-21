@@ -44,12 +44,12 @@ export class BlockCustomElement {
             if (!isConnected) return;
 
             this.block.connectingSide = this._getOtherSide(oppositeSide);
+            this.block.connectedToLed = block.led || block.connectedToLed;
 
-            if (this.block.y == this.boardSize - 1 && this.block.type.includes('south')) {
-                setTimeout(_ => this._eventAggregator.publish('ledGrounded'), 50);
-            }
-            if (this.block.led || block.connectedToLed) {
-                this.block.connectedToLed = true;
+            if (this.block.connectedToLed) {
+                if (this.block.y == (this.boardSize - 1) && this.block.type.includes('south')) {
+                    setTimeout(_ => this._eventAggregator.publish('ledGrounded'), 50);
+                }
             }
             setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 50);
         });
