@@ -1,16 +1,14 @@
 board {
-    --blockCount             : 4;
-    // --maxBlockSize        : 200px; // min(200px, 20vmin);
-    // --blockSize           : min(calc(90vmin / var(--blockCount)), var(--maxBlockSize));
-    --blockSize              : clamp(10vmin, calc(90vmin / var(--blockCount)), 200px);
-    --copperColor            : #c06205;
-    --copperHighlightColor   : lighten(#c06205, 50%);
-    display                  : flex;
-    flex-direction           : column;
-    justify-content          : space-between;
-    position                 : relative;
-    aspect-ratio             : 1;
-    flex                     : 0 0 var(--boardSize);
+    --blockCount          : 4;
+    --blockSize           : clamp(10vmin, calc(90vmin / var(--blockCount)), 200px);
+    --copperColor         : #c06205;
+    --copperHighlightColor: lighten(#c06205, 50%);
+    display               : flex;
+    flex-direction        : column;
+    justify-content       : space-between;
+    position              : relative;
+    aspect-ratio          : 1;
+    flex                  : 0 0 var(--boardSize);
 
     .live {
         --copperColor: mix(#c06205, yellow, 40%);
@@ -33,7 +31,7 @@ board {
         height          : calc(var(--blockSize) * 0.25);
         margin-top      : calc(var(--blockSize) * -0.25);
         color           : var(--copperColor);
-        font-size       : 3em;
+        font-size       : clamp(~'2rem, 2.241vw + 1.566rem, 3rem');
         line-height     : calc(var(--blockSize) * .25);
         display         : flex;
         justify-content : space-around;

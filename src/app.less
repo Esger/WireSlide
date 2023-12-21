@@ -22,7 +22,7 @@ header {
     h1 {
         margin     : 0;
         font-family: Bungee Hairline;
-        font-size  : 4em;
+        font-size  : clamp(~'3rem, 4.482vw + 1.132rem, 4rem');
         line-height: 1em;
     }
 }
@@ -37,7 +37,8 @@ footer {
         line-height: 1em;
 
         a {
-            color: inherit;
+            color          : inherit;
+            text-decoration: none;
         }
     }
 }
