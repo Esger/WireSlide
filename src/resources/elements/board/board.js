@@ -9,19 +9,22 @@ export class Board {
         this._element = element;
         this._eventAggregator = eventAggregator;
         this._firstBoardSize = 4;
-        this.blocks = [];
         this.types = ['north-south', 'east-west', 'north-east', 'north-west', 'south-east', 'south-west', 'north-south'];
     }
 
     attached() {
         this._newGame();
-        this.switchSubscription = this._eventAggregator.subscribe('toEmpty', block => {
+        this._switchSubscription = this._eventAggregator.subscribe('toEmpty', block => {
             this._switchBlocks(block);
+        })
+        this._newGameSubscription = this._eventAggregator.subscribe('newGame', _ => {
+            this._newGame();
         })
     }
 
     detached() {
-        this.switchSubscription.dispose();
+        this._switchSubscription.dispose();
+        this._newGameSubscription.dispose();
     }
 
     _newGame() {
@@ -31,7 +34,7 @@ export class Board {
         this._fillBoard();
         setTimeout(_ => {
             this._buildConnections();
-        });
+        }, 300);
     }
 
     _switchBlocks(block) {
@@ -65,6 +68,7 @@ export class Board {
     }
 
     _fillBoard() {
+        this.blocks = [];
         for (let i = 0; i < this.boardSize; i++) {
             for (let j = 0; j < this.boardSize; j++) {
                 const type = this.types[Math.floor(Math.random() * this.types.length)];

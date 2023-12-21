@@ -63,6 +63,11 @@ export class BlockCustomElement {
         }
     }
 
+    detached() {
+        this._connectSubscription.dispose();
+        if (this._groundedSubscription) this._groundedSubscription.dispose();
+    }
+
     // returns false or 'direction' (= truthy)
     _getDirectionIfNeighbour = (x, y) => {
         // check out of bounds
