@@ -5,7 +5,8 @@
 
     <div class="wire live"><span repeat.for="i of boardSize">+</span></div>
     <block repeat.for="block of blocks"
-           block.bind="block"></block>
+           block.bind="block"
+           board-size.bind="boardSize"></block>
     <div class="wire"><span repeat.for="i of boardSize">–</span></div>
 
 </template>

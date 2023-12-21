@@ -33,8 +33,8 @@ export class BlockCustomElement {
 
             // get direction false means not a neighbour
             const neighbourDirection = this._getDirectionIfNeighbour(block.x, block.y);
-            if (!neighbourDirection) return;
             console.log('connectNeighbours', block.x, block.y, ': ', this.block.x, this.block.y);
+            if (!neighbourDirection) return;
 
             const otherSide = this._opposites[block.connectingSide];
             const isConnected = this.block.type.includes(otherSide) && otherSide == neighbourDirection;
