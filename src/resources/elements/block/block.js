@@ -22,6 +22,7 @@ export class BlockCustomElement {
         this.block.isNeighbour = this._getDirectionIfNeighbour;
         this.block.setPosition = this._setPosition;
         this.block.connectIfTopRow = this._connectIfTopRow;
+        this.block.shortCircuit = this._shortCircuit;
     }
 
     attached() {
@@ -40,15 +41,18 @@ export class BlockCustomElement {
             const isConnected = this.block.type.includes(oppositeSide) && oppositeSide == neighbourDirection;
 
             this.block.live = isConnected;
+            this.block.linkedBlock = block;
 
             if (!isConnected) return;
 
             this.block.connectingSide = this._getOtherSide(oppositeSide);
             this.block.connectedToLed = block.led || block.connectedToLed;
 
-            if (this.block.connectedToLed) {
-                if (this.block.y == (this.boardSize - 1) && this.block.type.includes('south')) {
+            if (this.block.y == (this.boardSize - 1) && this.block.type.includes('south')) {
+                if (this.block.connectedToLed || this.block.led) {
                     setTimeout(_ => this._eventAggregator.publish('ledGrounded'), 50);
+                } else {
+                    this.block.shortCircuit();
                 }
             }
             setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 50);
@@ -114,6 +118,10 @@ export class BlockCustomElement {
         }
     }
 
+    _shortCircuit = () => {
+        this.block.isShortCircuited = true;
+        this.block.linkedBlock?.shortCircuit();
+    }
     toEmpty() {
         this._eventAggregator.publish('toEmpty', this.block);
     }
