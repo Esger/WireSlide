@@ -44,7 +44,7 @@ export class BlockCustomElement {
             if (!isConnected) return;
 
             this.block.connectingSide = this._getOtherSide(oppositeSide);
-            setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 100);
+            setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 50);
         });
     }
 
