@@ -1,6 +1,7 @@
 board {
     --blockCount          : 4;
     --blockSize           : clamp(10vmin, calc(90vmin / var(--blockCount)), 200px);
+    --initalCopperColor   : #c06205;
     --copperColor         : #c06205;
     --copperHighlightColor: lighten(#c06205, 50%);
     display               : flex;
@@ -26,6 +27,7 @@ board {
         --boardSize: calc(5 * var(--blockSize));
     }
 
+    // the juice bars hamburgering the board
     >.wire {
         background-image: linear-gradient(to bottom, var(--copperColor), var(--copperHighlightColor) 50%, var(--copperColor) 100%);
         height          : calc(var(--blockSize) * 0.25);
@@ -35,6 +37,18 @@ board {
         line-height     : calc(var(--blockSize) * .25);
         display         : flex;
         justify-content : space-around;
+
+        .plus {
+            color: var(--initalCopperColor);
+        }
+
+        // span {
+        //     --copperColor: var(--initalCopperColor);
+        // }
+
+        // &.live span {
+        //     --copperColor: var(--initalCopperColor);
+        // }
 
         ~.wire {
             margin-bottom: calc(var(--blockSize) * -0.25);
