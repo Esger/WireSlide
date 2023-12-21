@@ -36,10 +36,15 @@ export class BlockCustomElement {
             console.log('connectNeighbours', block.x, block.y, ': ', this.block.x, this.block.y);
             if (!neighbourDirection) return;
 
-            const otherSide = this._opposites[block.connectingSide];
-            const isConnected = this.block.type.includes(otherSide) && otherSide == neighbourDirection;
+            const oppositeSide = this._opposites[block.connectingSide];
+            const isConnected = this.block.type.includes(oppositeSide) && oppositeSide == neighbourDirection;
 
-            this.block.live = isConnected || this.block.live;
+            this.block.live = isConnected;
+
+            if (!isConnected) return;
+
+            this.block.connectingSide = this._getOtherSide(oppositeSide);
+            setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 100);
         });
     }
 
