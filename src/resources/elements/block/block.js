@@ -44,8 +44,19 @@ export class BlockCustomElement {
             if (!isConnected) return;
 
             this.block.connectingSide = this._getOtherSide(oppositeSide);
+
+            if (this.block.y == this.boardSize - 1 && this.block.type.includes('south')) {
+                setTimeout(_ => this._eventAggregator.publish('ledGrounded'), 50);
+            }
+            if (this.block.led || block.connectedToLed) {
+                this.block.connectedToLed = true;
+            }
             setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 50);
         });
+
+        if (this.block.led) {
+            this._groundedSubscription = this._eventAggregator.subscribe('ledGrounded', _ => this.block.grounded = true);
+        }
     }
 
     // returns false or 'direction' (= truthy)

@@ -50,6 +50,8 @@ export class Board {
     _buildConnections() {
         this.blocks.forEach(block => {
             block.live = false;
+            block.connectedToLed = false;
+            block.grounded = false;
         });
         this.blocks.forEach(block => {
             block.connectIfTopRow();
