@@ -1,6 +1,9 @@
 board {
     --blockCount          : 4;
-    --blockSize           : clamp(10vmin, calc(90vmin / var(--blockCount)), 200px);
+    --widthBlocksize      : calc(90vw / var(--blockCount));
+    --heightBlocksize     : calc(50dvh / var(--blockCount));
+    --idealBlockSize      : ~'min(var(--widthBlocksize), var(--heightBlocksize))';
+    --blockSize           : clamp(5vmin, var(--idealBlockSize), 150px);
     --initalCopperColor   : #c06205;
     --copperColor         : #c06205;
     --copperHighlightColor: lighten(#c06205, 50%);
