@@ -8,6 +8,7 @@ export class ButtonCustomElement {
         this._eventAggregator = eventAggregator;
     }
     newGame() {
-        this._eventAggregator.publish('newGame');
+        const eventName = this.textContent.split(' ').join('');
+        this._eventAggregator.publish(eventName);
     }
 }

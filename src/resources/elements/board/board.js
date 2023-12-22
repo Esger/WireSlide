@@ -15,7 +15,7 @@ export class Board {
     attached() {
         this._newGame();
         this._switchSubscription = this._eventAggregator.subscribe('toEmpty', block => this._switchBlocks(block));
-        this._newGameSubscription = this._eventAggregator.subscribe('newGame', _ => this._newGame());
+        this._restartSubscription = this._eventAggregator.subscribe('Restart', _ => this._newGame());
         this._shortCircuitSubscription = this._eventAggregator.subscribe('shortCircuit', _ => {
             if (!this._played) {
                 this._newGame();
@@ -30,7 +30,7 @@ export class Board {
 
     detached() {
         this._switchSubscription.dispose();
-        this._newGameSubscription.dispose();
+        this._restartSubscription.dispose();
         this._shortCircuitSubscription.dispose();
     }
 
