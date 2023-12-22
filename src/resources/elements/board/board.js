@@ -9,6 +9,7 @@ export class Board {
         this._element = element;
         this._eventAggregator = eventAggregator;
         this._firstBoardSize = 4;
+        this._maxBoardSize = 8;
         this.types = ['north-south', 'east-west', 'north-east', 'north-west', 'south-east', 'south-west', 'north-south'];
     }
 
@@ -20,11 +21,15 @@ export class Board {
             if (!this._played) {
                 this._newGame();
             }
-        })
+        });
         this._ledGroundedSubscription = this._eventAggregator.subscribe('ledGrounded', _ => {
             if (!this._played) {
                 this._newGame();
             }
+        });
+        this._nextSubscription = this._eventAggregator.subscribe('Next', _ => {
+            this.boardSize < this._maxBoardSize ? this.boardSize++ : this.boardSize = this._firstBoardSize;
+            this._newGame(true);
         })
     }
 
@@ -34,9 +39,9 @@ export class Board {
         this._shortCircuitSubscription.dispose();
     }
 
-    _newGame() {
+    _newGame(nextLevel = false) {
         this._played = false;
-        this.boardSize = this._firstBoardSize;
+        this.boardSize = nextLevel ? this.boardSize : this._firstBoardSize;
         this._element.style.setProperty('--blockCount', this.boardSize);
 
         this._fillBoard();
