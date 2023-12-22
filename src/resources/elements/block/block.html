@@ -1,0 +1,22 @@
+<template class="${block.type} 
+                ${block.live ? 'live' : ''} 
+                ${block.led ? 'led' : ''} 
+                ${block.empty ? 'empty' : ''} 
+                ${block.grounded ? 'grounded' : ''} 
+                ${block.isShortCircuited ? 'shortCircuited' : ''}"
+          css.bind="position"
+          click.trigger="toEmpty()">
+    <require from="./block.css"></require>
+    <div class="rotator">
+
+        <div class="wire wire--full">
+            <div class="mantle"></div>
+        </div>
+        <div class="wire wire--elbow">
+        </div>
+        <div class="wire wire--rotated">
+            <div class="mantle"></div>
+        </div>
+
+    </div>
+</template>

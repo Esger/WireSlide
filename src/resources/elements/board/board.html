@@ -1,0 +1,18 @@
+<template class="size--${boardSize}">
+    <require from="./board.css"></require>
+    <require from="elements/block/block"></require>
+    <require from="elements/block/block"></require>
+
+    <div class="wire live">
+        <span repeat.for="i of boardSize"
+            class="plus">+</span>
+    </div>
+    <block repeat.for="block of blocks"
+           block.bind="block"
+           board-size.bind="boardSize"></block>
+    <div class="wire">
+        <span repeat.for="i of boardSize"
+            class="minus">&ndash;</span>
+    </div>
+
+</template>

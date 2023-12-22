@@ -1,0 +1,70 @@
+board {
+    --blockCount          : 4;
+    --widthBlocksize      : calc(90vw / var(--blockCount));
+    --heightBlocksize     : calc(50dvh / var(--blockCount));
+    --idealBlockSize      : ~'min(var(--widthBlocksize), var(--heightBlocksize))';
+    --blockSize           : clamp(5vmin, var(--idealBlockSize), 150px);
+    --initalCopperColor   : #c06205;
+    --copperColor         : #c06205;
+    --copperHighlightColor: lighten(#c06205, 50%);
+    display               : flex;
+    flex-direction        : column;
+    justify-content       : space-between;
+    position              : relative;
+    aspect-ratio          : 1;
+    flex                  : 0 0 var(--boardSize);
+    margin-block          : calc(.25 * var(--blockSize));
+
+    .live {
+        --copperColor: mix(#c06205, yellow, 40%);
+    }
+
+    &.size--3 {
+        --boardSize: calc(3 * var(--blockSize));
+    }
+
+    &.size--4 {
+        --boardSize: calc(4 * var(--blockSize));
+    }
+
+    &.size--5 {
+        --boardSize: calc(5 * var(--blockSize));
+    }
+
+    &.size--6 {
+        --boardSize: calc(6 * var(--blockSize));
+    }
+
+    &.size--7 {
+        --boardSize: calc(7 * var(--blockSize));
+    }
+
+    &.size--8 {
+        --boardSize: calc(8 * var(--blockSize));
+    }
+
+    // the juice bars hamburgering the board
+    >.wire {
+        background-image: linear-gradient(to bottom, var(--copperColor), var(--copperHighlightColor) 50%, var(--copperColor) 100%);
+        height          : calc(var(--blockSize) * 0.25);
+        margin-top      : calc(var(--blockSize) * -0.25);
+        color           : var(--copperColor);
+        font-size       : clamp(~'2rem, 2.241vw + 1.566rem, 3rem');
+        line-height     : calc(var(--blockSize) * .25);
+        display         : flex;
+        justify-content : space-around;
+
+        .plus {
+            color: var(--initalCopperColor);
+        }
+
+        .minus {
+            font-size  : clamp(3rem, 2.241vw + 2.566rem, 4rem);
+            line-height: calc(var(--blockSize) * .2);
+        }
+
+        ~.wire {
+            margin-bottom: calc(var(--blockSize) * -0.25);
+        }
+    }
+}
