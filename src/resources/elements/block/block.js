@@ -53,6 +53,7 @@ export class BlockCustomElement {
                     setTimeout(_ => this._eventAggregator.publish('ledGrounded'), 50);
                 } else {
                     this.block.shortCircuit();
+                    this._eventAggregator.publish('shortCircuit');
                 }
             }
             setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 50);

@@ -14,20 +14,28 @@ export class Board {
 
     attached() {
         this._newGame();
-        this._switchSubscription = this._eventAggregator.subscribe('toEmpty', block => {
-            this._switchBlocks(block);
+        this._switchSubscription = this._eventAggregator.subscribe('toEmpty', block => this._switchBlocks(block));
+        this._newGameSubscription = this._eventAggregator.subscribe('newGame', _ => this._newGame());
+        this._shortCircuitSubscription = this._eventAggregator.subscribe('shortCircuit', _ => {
+            if (!this._played) {
+                this._newGame();
+            }
         })
-        this._newGameSubscription = this._eventAggregator.subscribe('newGame', _ => {
-            this._newGame();
+        this._ledGroundedSubscription = this._eventAggregator.subscribe('ledGrounded', _ => {
+            if (!this._played) {
+                this._newGame();
+            }
         })
     }
 
     detached() {
         this._switchSubscription.dispose();
         this._newGameSubscription.dispose();
+        this._shortCircuitSubscription.dispose();
     }
 
     _newGame() {
+        this._played = false;
         this.boardSize = this._firstBoardSize;
         this._element.style.setProperty('--blockCount', this.boardSize);
 
@@ -38,6 +46,7 @@ export class Board {
     }
 
     _switchBlocks(block) {
+        this._played = true;
         const emptyBlock = this.blocks.find(b => b.empty);
         if (block.isNeighbour(emptyBlock.x, emptyBlock.y)) {
             const tempBlock = {
