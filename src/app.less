@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Bungee+Hairline&family=Open+Sans:wght@400;600&display=swap');
 
-:root {
+body {
     --darkBackground   : #111;
     --lightColor       : mix(azure, black, 85%);
     --slightAccentColor: #f0ffff44;
@@ -10,16 +10,13 @@
     --idealBlockSize   : ~'min(var(--widthBlocksize), var(--heightBlocksize))';
     --blockSize        : clamp(5vmin, var(--idealBlockSize), 150px);
     --boardSize        : calc(var(--blockCount) * var(--blockSize));
-}
-
-body {
-    background-color: var(--darkBackground);
-    display         : flex;
-    flex-direction  : column;
-    align-items     : center;
-    justify-content : center;
-    height          : 100dvh;
-    color           : var(--lightColor);
+    background-color   : var(--darkBackground);
+    display            : flex;
+    flex-direction     : column;
+    align-items        : center;
+    justify-content    : center;
+    height             : 100dvh;
+    color              : var(--lightColor);
 }
 
 header {
