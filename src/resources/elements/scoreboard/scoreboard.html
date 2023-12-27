@@ -1,5 +1,7 @@
 <template>
     <require from="./scoreboard.css"></require>
     <p>Moves: ${moves}</p>
+    <p show.bind="gameState !== 0"
+       class="gameState gameState--${gameStates[gameState]}">${gameStates[gameState]}</p>
     <p>Wins: ${wins}</p>
 </template>

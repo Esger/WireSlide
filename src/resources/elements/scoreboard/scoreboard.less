@@ -6,5 +6,19 @@ scoreboard {
 
     p {
         font-size: 24px;
+
+        &.gameState {
+            font-family   : 'Bungee Outline';
+            letter-spacing: 1px;
+            scale         : 1.4;
+
+            &.gameState--connected {
+                color: lighten(green, 50%);
+            }
+
+            &.gameState--shortcircuit {
+                color: crimson;
+            }
+        }
     }
 }
