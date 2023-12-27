@@ -16,7 +16,7 @@ export class Board {
     attached() {
         this._newGame();
         this._switchSubscription = this._eventAggregator.subscribe('toEmpty', block => this._switchBlocks(block));
-        this._restartSubscription = this._eventAggregator.subscribe('Restart', _ => this._newGame());
+        this._restartSubscription = this._eventAggregator.subscribe('restart', _ => this._newGame());
         this._shortCircuitSubscription = this._eventAggregator.subscribe('shortCircuit', _ => {
             if (!this._played) {
                 this._newGame();
@@ -27,7 +27,7 @@ export class Board {
                 this._newGame();
             }
         });
-        this._nextSubscription = this._eventAggregator.subscribe('Next', _ => {
+        this._nextSubscription = this._eventAggregator.subscribe('next', _ => {
             this.boardSize < this._maxBoardSize ? this.boardSize++ : this.boardSize = this._firstBoardSize;
             this._newGame(true);
         })

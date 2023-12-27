@@ -8,7 +8,7 @@ export class ButtonCustomElement {
         this._eventAggregator = eventAggregator;
     }
     clickButton() {
-        const eventName = this.textContent.split(' ').join('');
+        const eventName = this.textContent.split(' ').join('').toLowerCase();
         this._eventAggregator.publish(eventName);
     }
 }

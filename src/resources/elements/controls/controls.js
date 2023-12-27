@@ -10,7 +10,7 @@ export class Controls {
         this._shortCircuitSubscription = this._eventAggregator.subscribe('shortCircuit', _ => {
             this.nextButtonIsVisible = false;
         })
-        this._nextSubscription = this._eventAggregator.subscribe('Next', _ => {
+        this._nextSubscription = this._eventAggregator.subscribe('next', _ => {
             this.nextButtonIsVisible = false;
         })
     }
