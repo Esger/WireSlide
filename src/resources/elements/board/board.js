@@ -32,7 +32,7 @@ export class Board {
         });
         this._nextSubscription = this._eventAggregator.subscribe('next', _ => {
             this.boardSize < this._maxBoardSize ? this.boardSize++ : this.boardSize = this._firstBoardSize;
-            this._newGame(this.boardSize + 1);
+            this._newGame(this.boardSize);
         })
     }
 
