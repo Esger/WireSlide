@@ -17,11 +17,14 @@ export class Board {
         this._newGame();
         this._switchSubscription = this._eventAggregator.subscribe('toEmpty', block => this._switchBlocks(block));
         this._restartSubscription = this._eventAggregator.subscribe('restart', _ => this._newGame());
+        this._restartSubscription = this._eventAggregator.subscribe('restartlevel', _ => this._newGame(this.boardSize));
+        // if random board has short circuit -> new game
         this._shortCircuitSubscription = this._eventAggregator.subscribe('shortCircuit', _ => {
             if (!this._played) {
                 this._newGame();
             }
         });
+        // if random board has led grounded -> new game
         this._ledGroundedSubscription = this._eventAggregator.subscribe('ledGrounded', _ => {
             if (!this._played) {
                 this._newGame();
@@ -29,7 +32,7 @@ export class Board {
         });
         this._nextSubscription = this._eventAggregator.subscribe('next', _ => {
             this.boardSize < this._maxBoardSize ? this.boardSize++ : this.boardSize = this._firstBoardSize;
-            this._newGame(true);
+            this._newGame(this.boardSize + 1);
         })
     }
 
@@ -39,9 +42,9 @@ export class Board {
         this._shortCircuitSubscription.dispose();
     }
 
-    _newGame(nextLevel = false) {
+    _newGame(boardSize = this._firstBoardSize) {
         this._played = false;
-        this.boardSize = nextLevel ? this.boardSize : this._firstBoardSize;
+        this.boardSize = boardSize;
         document.body.style.setProperty('--blockCount', this.boardSize);
 
         this._fillBoard();
