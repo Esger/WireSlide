@@ -11,10 +11,16 @@ export class Scoreboard {
     }
 
     attached() {
-        this._eventAggregator.subscribe('restart', _ => {
-            this.moves = 0;
-        });
-        this._eventAggregator.subscribe('toEmpty', _ => this.moves++);
-        this._eventAggregator.subscribe('ledGrounded', _ => this.wins++);
+        this._restartSubscription = this._eventAggregator.subscribe('restart', _ => this.moves = 0);
+        this._nextSubscription = this._eventAggregator.subscribe('next', _ => this.moves = 0);
+        this._toEmptySubscription = this._eventAggregator.subscribe('toEmpty', _ => this.moves++);
+        this._ledGroundedSubscription = this._eventAggregator.subscribe('ledGrounded', _ => this.wins++);
+    }
+
+    detached() {
+        this._restartSubscription.dispose();
+        this._nextSubscription.dispose();
+        this._toEmptySubscription.dispose();
+        this._ledGroundedSubscription.dispose();
     }
 }
