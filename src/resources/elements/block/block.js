@@ -65,11 +65,16 @@ export class BlockCustomElement {
             }
             this._movingAllowed = false;
         });
+
+        this._shortCircuitSubscription = this._eventAggregator.subscribe('shortCircuit', _ => {
+            this._movingAllowed = false;
+        })
     }
 
     detached() {
         this._connectSubscription.dispose();
         this._groundedSubscription.dispose();
+        this._shortCircuitSubscription.dispose();
     }
 
     // returns false or 'direction' (= truthy)

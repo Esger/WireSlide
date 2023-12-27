@@ -13,12 +13,16 @@ export class Controls {
         this._nextSubscription = this._eventAggregator.subscribe('next', _ => {
             this.nextButtonIsVisible = false;
         })
+        this._restartLevelSubscription = this._eventAggregator.subscribe('restartlevel', _ => {
+            this.nextButtonIsVisible = false;
+        })
     }
 
     detached() {
+        this._nextSubscription.dispose();
         this._ledGroundedSubscription.dispose();
         this._shortCircuitSubscription.dispose();
-        this._nextSubscription.dispose();
+        this._restartLevelSubscription.dispose();
     }
 
 }
