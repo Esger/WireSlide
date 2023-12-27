@@ -42,7 +42,7 @@ export class Board {
     _newGame(nextLevel = false) {
         this._played = false;
         this.boardSize = nextLevel ? this.boardSize : this._firstBoardSize;
-        this._element.style.setProperty('--blockCount', this.boardSize);
+        document.body.style.setProperty('--blockCount', this.boardSize);
 
         this._fillBoard();
         setTimeout(_ => {
