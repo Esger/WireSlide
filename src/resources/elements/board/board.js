@@ -13,7 +13,7 @@ export class Board {
         this._oddLevel = this._firstBoardSize % 2 == 1;
         this._straights = ['east-west', 'north-south'];
         this._bends = ['north-east', 'north-west', 'south-east', 'south-west'];
-        this.types = [...this._straights, ...this._bends];
+        this._types = [...this._straights, ...this._bends];
     }
 
     attached() {
@@ -90,28 +90,52 @@ export class Board {
         });
     }
 
-    _fillBoard() {
-        this.blocks = [];
-        this.types = this._oddLevel ? [...this._bends] : [...this._straights, ...this._bends];
+    _setTypes(count) {
+        if (this._oddLevel) {
+            this._types = [...this._bends];
+            while (this._types.length < count) {
+                this._types = [...this._types, ...this._bends];
+            }
+            this._types = this._types.slice(0, count);
+        } else {
+            this._types = [...this._straights, ...this._bends];
+            while (this._types.length < count) {
+                this._types = [...this._types, ...this._straights, ...this._bends];
+            }
+        }
 
+        // shuffle types
+        for (let i = 0; i < this._types.length; i++) {
+            const j = Math.floor(Math.random() * this._types.length);
+            const temp = this._types[i];
+            this._types[i] = this._types[j];
+            this._types[j] = temp;
+        }
+    }
+
+    _fillBoard() {
+        // setup types based on odd level
         const count = this.boardSize * this.boardSize;
+        this._setTypes(count);
+
         // set type of one random block to 'empty'
         const emptyIndex = Math.floor(Math.random() * count);
         // set type of one random block to 'led'; index should be different from 'empty'
-        let ledIndex;
         do {
-            ledIndex = (Math.floor(Math.random() * count));
+            var ledIndex = (Math.floor(Math.random() * count));
         } while (emptyIndex == ledIndex)
 
+        // fill board
+        this.blocks = [];
+        let index = 0;
         for (let i = 0; i < this.boardSize; i++) {
             for (let j = 0; j < this.boardSize; j++) {
-                const type = this.blocks.length < 4 ? this._bends[this.blocks.length] : this.types[Math.floor(Math.random() * this.types.length)];
-                const index = i * this.boardSize + j;
+                const type = this._types[index++];
                 const block = {
                     x: j,
                     y: i,
                     type: type,
-                    id: i * this.boardSize + j,
+                    id: index,
                     led: index == ledIndex,
                     empty: index == emptyIndex
                 };
