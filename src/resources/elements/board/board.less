@@ -9,6 +9,8 @@ board {
     aspect-ratio          : 1;
     flex                  : 0 0 var(--boardSize);
     margin-block          : calc(.25 * var(--blockSize));
+    background-image      : repeating-linear-gradient(#fff2 0 1px, #0000 1px var(--blockSize)),
+        repeating-linear-gradient(90deg, #0000 1px calc(var(--blockSize) - 1px), #fff2 0 calc(1px + var(--blockSize)));
 
     .live {
         --copperColor: mix(#c06205, yellow, 40%);
