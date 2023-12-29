@@ -1,4 +1,4 @@
-import { bindable, inject } from 'aurelia-framework';
+import { inject } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 
 @inject(EventAggregator)
@@ -18,7 +18,7 @@ export class Scoreboard {
         this._nextSubscription = this._eventAggregator.subscribe('next', _ => this._reset());
         this._toEmptySubscription = this._eventAggregator.subscribe('toEmpty', _ => this.moves++);
         this._ledGroundedSubscription = this._eventAggregator.subscribe('ledGrounded', _ => this._win());
-        this._shortCircuitSubscription = this._eventAggregator.subscribe('shortCircuit', _ => this._loose());
+        this._shortCircuitSubscription = this._eventAggregator.subscribe('shortCircuit', _ => this._lose());
     }
 
     detached() {
@@ -29,7 +29,7 @@ export class Scoreboard {
         this._restartLevelSubscription.dispose();
     }
 
-    _loose() {
+    _lose() {
         this.gameState = 2;
     }
 

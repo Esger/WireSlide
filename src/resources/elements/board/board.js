@@ -106,8 +106,9 @@ export class Board {
                 this._types = [...this._types, ...this._straights, ...this._bends];
             }
         }
+    }
 
-        // shuffle types
+    _shuffleTypes() {
         for (let i = 0; i < this._types.length; i++) {
             const j = Math.floor(Math.random() * this._types.length);
             const temp = this._types[i];
@@ -120,13 +121,19 @@ export class Board {
         // setup types based on odd level
         const count = this.boardSize * this.boardSize;
         this._setTypes(count);
+        this._shuffleTypes();
 
         // set type of one random block to 'empty'
-        const emptyIndex = Math.floor(Math.random() * count);
+        const emptyIndex = Math.ceil(Math.random() * count);
+        // let's set ledIndex opposite to emptyIndex
+        let ledIndex = (emptyIndex + Math.ceil(count / 2)) % count;
+        while (this._types[ledIndex] == this._types[emptyIndex]) {
+            ledIndex = (ledIndex + 1) % count;
+        }
         // set type of one random block to 'led'; index should be different from 'empty'
-        do {
-            var ledIndex = (Math.floor(Math.random() * count));
-        } while (emptyIndex == ledIndex)
+        // do {
+        //     var ledIndex = (Math.floor(Math.random() * count));
+        // } while (emptyIndex == ledIndex)
 
         // fill board
         this.blocks = [];
