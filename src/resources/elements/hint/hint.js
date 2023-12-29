@@ -1,6 +1,6 @@
 export class HintCustomElement {
 
     constructor() {
-        this.hint = 'Wire the the green light!';
+        this.hint = 'Wire the green light!';
     }
 }
