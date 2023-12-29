@@ -1,9 +1,4 @@
 board {
-    --blockCount          : 4;
-    --widthBlocksize      : calc(90vw / var(--blockCount));
-    --heightBlocksize     : calc(50dvh / var(--blockCount));
-    --idealBlockSize      : ~'min(var(--widthBlocksize), var(--heightBlocksize))';
-    --blockSize           : clamp(5vmin, var(--idealBlockSize), 150px);
     --initalCopperColor   : #c06205;
     --copperColor         : #c06205;
     --copperHighlightColor: lighten(#c06205, 50%);
@@ -14,33 +9,11 @@ board {
     aspect-ratio          : 1;
     flex                  : 0 0 var(--boardSize);
     margin-block          : calc(.25 * var(--blockSize));
+    background-image      : repeating-linear-gradient(#fff2 0 1px, #0000 1px var(--blockSize)),
+        repeating-linear-gradient(90deg, #0000 1px calc(var(--blockSize) - 1px), #fff2 0 calc(1px + var(--blockSize)));
 
     .live {
         --copperColor: mix(#c06205, yellow, 40%);
-    }
-
-    &.size--3 {
-        --boardSize: calc(3 * var(--blockSize));
-    }
-
-    &.size--4 {
-        --boardSize: calc(4 * var(--blockSize));
-    }
-
-    &.size--5 {
-        --boardSize: calc(5 * var(--blockSize));
-    }
-
-    &.size--6 {
-        --boardSize: calc(6 * var(--blockSize));
-    }
-
-    &.size--7 {
-        --boardSize: calc(7 * var(--blockSize));
-    }
-
-    &.size--8 {
-        --boardSize: calc(8 * var(--blockSize));
     }
 
     // the juice bars hamburgering the board

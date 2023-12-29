@@ -7,8 +7,8 @@ export class ButtonCustomElement {
     constructor(eventAggregator) {
         this._eventAggregator = eventAggregator;
     }
-    newGame() {
-        const eventName = this.textContent.split(' ').join('');
+    clickButton() {
+        const eventName = this.textContent.split(' ').join('').toLowerCase();
         this._eventAggregator.publish(eventName);
     }
 }

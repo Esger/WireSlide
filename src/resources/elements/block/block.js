@@ -23,6 +23,7 @@ export class BlockCustomElement {
         this.block.setPosition = this._setPosition;
         this.block.connectIfTopRow = this._connectIfTopRow;
         this.block.shortCircuit = this._shortCircuit;
+        this._movingAllowed = true;
     }
 
     attached() {
@@ -34,7 +35,6 @@ export class BlockCustomElement {
 
             // get direction false means not a neighbour
             const neighbourDirection = this._getDirectionIfNeighbour(block.x, block.y);
-            console.log('connectNeighbours', block.x, block.y, ': ', this.block.x, this.block.y);
             if (!neighbourDirection) return;
 
             const oppositeSide = this._opposites[block.connectingSide];
@@ -59,14 +59,22 @@ export class BlockCustomElement {
             setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 50);
         });
 
-        if (this.block.led) {
-            this._groundedSubscription = this._eventAggregator.subscribe('ledGrounded', _ => this.block.grounded = true);
-        }
+        this._groundedSubscription = this._eventAggregator.subscribe('ledGrounded', _ => {
+            if (this.block.led) {
+                this.block.grounded = true;
+            }
+            this._movingAllowed = false;
+        });
+
+        this._shortCircuitSubscription = this._eventAggregator.subscribe('shortCircuit', _ => {
+            this._movingAllowed = false;
+        })
     }
 
     detached() {
         this._connectSubscription.dispose();
-        if (this._groundedSubscription) this._groundedSubscription.dispose();
+        this._groundedSubscription.dispose();
+        this._shortCircuitSubscription.dispose();
     }
 
     // returns false or 'direction' (= truthy)
@@ -129,6 +137,6 @@ export class BlockCustomElement {
         this.block.linkedBlock?.shortCircuit();
     }
     toEmpty() {
-        this._eventAggregator.publish('toEmpty', this.block);
+        if (this._movingAllowed) this._eventAggregator.publish('toEmpty', this.block);
     }
 }

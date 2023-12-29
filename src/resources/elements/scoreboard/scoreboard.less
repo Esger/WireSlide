@@ -1,0 +1,29 @@
+scoreboard {
+    top            : calc(var(--blockSize)*-65);
+    display        : flex;
+    align-items    : flex-end;
+    justify-content: space-between;
+    width          : var(--boardSize);
+
+    p {
+        font-size: 18px;
+
+        &.gameState {
+            display       : flex;
+            font-family   : 'Bungee Hairline';
+            letter-spacing: 1px;
+            scale         : 1.4;
+            flex          : 0 1 var(--blockSize);
+            text-align    : center;
+
+            &.gameState--connected {
+                color: lighten(green, 50%);
+            }
+
+            &.gameState--shortcircuit {
+                color: crimson;
+            }
+
+        }
+    }
+}

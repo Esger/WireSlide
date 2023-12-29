@@ -10,26 +10,35 @@ export class Board {
         this._eventAggregator = eventAggregator;
         this._firstBoardSize = 4;
         this._maxBoardSize = 8;
-        this.types = ['north-south', 'east-west', 'north-east', 'north-west', 'south-east', 'south-west', 'north-south'];
+        this._oddLevel = this._firstBoardSize % 2 == 1;
+        this._straights = ['east-west', 'north-south'];
+        this._bends = ['north-east', 'north-west', 'south-east', 'south-west'];
+        this._types = [...this._straights, ...this._bends];
     }
 
     attached() {
         this._newGame();
         this._switchSubscription = this._eventAggregator.subscribe('toEmpty', block => this._switchBlocks(block));
-        this._restartSubscription = this._eventAggregator.subscribe('Restart', _ => this._newGame());
+        this._restartSubscription = this._eventAggregator.subscribe('restart', _ => this._newGame());
+        this._restartLevelSubscription = this._eventAggregator.subscribe('restartlevel', _ => this._newGame(this.boardSize));
+        // if random board has short circuit -> new game
         this._shortCircuitSubscription = this._eventAggregator.subscribe('shortCircuit', _ => {
             if (!this._played) {
                 this._newGame();
             }
         });
+        // if random board has led grounded -> new game
         this._ledGroundedSubscription = this._eventAggregator.subscribe('ledGrounded', _ => {
             if (!this._played) {
                 this._newGame();
             }
         });
-        this._nextSubscription = this._eventAggregator.subscribe('Next', _ => {
-            this.boardSize < this._maxBoardSize ? this.boardSize++ : this.boardSize = this._firstBoardSize;
-            this._newGame(true);
+        this._nextSubscription = this._eventAggregator.subscribe('next', _ => {
+            this._oddLevel = !this._oddLevel;
+            if (this.boardSize < this._maxBoardSize) {
+                if (!this._oddLevel) this.boardSize++
+            } else this.boardSize = this._firstBoardSize;
+            this._newGame(this.boardSize);
         })
     }
 
@@ -37,12 +46,15 @@ export class Board {
         this._switchSubscription.dispose();
         this._restartSubscription.dispose();
         this._shortCircuitSubscription.dispose();
+        this._ledGroundedSubscription.dispose();
+        this._nextSubscription.dispose();
+        this._restartLevelSubscription.dispose();
     }
 
-    _newGame(nextLevel = false) {
+    _newGame(boardSize = this._firstBoardSize) {
         this._played = false;
-        this.boardSize = nextLevel ? this.boardSize : this._firstBoardSize;
-        this._element.style.setProperty('--blockCount', this.boardSize);
+        this.boardSize = boardSize;
+        document.body.style.setProperty('--blockCount', this.boardSize);
 
         this._fillBoard();
         setTimeout(_ => {
@@ -81,28 +93,64 @@ export class Board {
         });
     }
 
+    _setTypes(count) {
+        if (this._oddLevel) {
+            this._types = [...this._bends];
+            while (this._types.length < count) {
+                this._types = [...this._types, ...this._bends];
+            }
+            this._types = this._types.slice(0, count);
+        } else {
+            this._types = [...this._straights, ...this._bends];
+            while (this._types.length < count) {
+                this._types = [...this._types, ...this._straights, ...this._bends];
+            }
+        }
+    }
+
+    _shuffleTypes() {
+        for (let i = 0; i < this._types.length; i++) {
+            const j = Math.floor(Math.random() * this._types.length);
+            const temp = this._types[i];
+            this._types[i] = this._types[j];
+            this._types[j] = temp;
+        }
+    }
+
     _fillBoard() {
+        // setup types based on odd level
+        const count = this.boardSize * this.boardSize;
+        this._setTypes(count);
+        this._shuffleTypes();
+
+        // set type of one random block to 'empty'
+        const emptyIndex = Math.ceil(Math.random() * count);
+        // let's set ledIndex opposite to emptyIndex
+        let ledIndex = (emptyIndex + Math.ceil(count / 2)) % count;
+        while (this._types[ledIndex] == this._types[emptyIndex]) {
+            ledIndex = (ledIndex + 1) % count;
+        }
+        // set type of one random block to 'led'; index should be different from 'empty'
+        // do {
+        //     var ledIndex = (Math.floor(Math.random() * count));
+        // } while (emptyIndex == ledIndex)
+
+        // fill board
         this.blocks = [];
+        let index = 0;
         for (let i = 0; i < this.boardSize; i++) {
             for (let j = 0; j < this.boardSize; j++) {
-                const type = this.types[Math.floor(Math.random() * this.types.length)];
+                const type = this._types[index++];
                 const block = {
                     x: j,
                     y: i,
                     type: type,
-                    id: i * this.boardSize + j,
+                    id: index,
+                    led: index == ledIndex,
+                    empty: index == emptyIndex
                 };
                 this.blocks.push(block);
             }
         }
-        // set type of one random block to 'empty'
-        const randomIndex = Math.floor(Math.random() * this.blocks.length);
-        this.blocks[randomIndex].empty = true;
-        // set type of one random block to 'led'; index should be different from 'empty'
-        let randomIndex2;
-        do {
-            randomIndex2 = (Math.floor(Math.random() * this.blocks.length));
-        } while (randomIndex == randomIndex2)
-        this.blocks[randomIndex2].led = true;
     }
 }

@@ -1,4 +1,8 @@
 <template>
     <require from="./scoreboard.css"></require>
-    <h1>${value}</h1>
+    <p>Moves: ${moves}</p>
+    <p class="gameState gameState--${gameStates[gameState]}">
+        <span show.bind="gameState !== 0">${gameStates[gameState]}</span>
+    </p>
+    <p>Wins: ${wins}</p>
 </template>
