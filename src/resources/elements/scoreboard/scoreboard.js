@@ -10,7 +10,6 @@ export class Scoreboard {
         this.wins = 0;
         this.gameStates = ['', 'connected', 'shortcircuit'];
         this.gameState = 0;
-        this.hint = 'Wire the the green LED!';
     }
 
     attached() {
