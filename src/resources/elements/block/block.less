@@ -154,9 +154,10 @@ block {
             border-radius         : 0;
 
             &.wire--elbow {
+                --ledSize       : .55;
                 display         : block;
-                width           : calc(var(--blockSize) * 0.6);
-                height          : calc(var(--blockSize) * 0.6);
+                width           : calc(var(--blockSize) * var(--ledSize));
+                height          : calc(var(--blockSize) * var(--ledSize));
                 border-radius   : 1in;
                 background-image: radial-gradient(var(--ledHighlightColor) -40%, var(--ledColor) 90%, #0000 0);
                 box-shadow      : inset 0 0 0 4px green;

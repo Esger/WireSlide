@@ -127,13 +127,9 @@ export class Board {
         const emptyIndex = Math.ceil(Math.random() * count);
         // let's set ledIndex opposite to emptyIndex
         let ledIndex = (emptyIndex + Math.ceil(count / 2)) % count;
-        while (this._types[ledIndex] == this._types[emptyIndex]) {
+        while (this._types[ledIndex] == this._types[emptyIndex] || ledIndex == 0) {
             ledIndex = (ledIndex + 1) % count;
         }
-        // set type of one random block to 'led'; index should be different from 'empty'
-        // do {
-        //     var ledIndex = (Math.floor(Math.random() * count));
-        // } while (emptyIndex == ledIndex)
 
         // fill board
         this.blocks = [];
