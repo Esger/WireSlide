@@ -10,5 +10,15 @@ hint {
         letter-spacing: 1px;
         color         : lighten(green, 50%);
         text-align    : center;
+
+        &.gameState--connected {
+            color: lighten(green, 50%);
+            .fluid(font-size, 36px, 56px);
+        }
+
+        &.gameState--shortcircuit {
+            color: crimson;
+            .fluid(font-size, 36px, 56px);
+        }
     }
 }

@@ -1,5 +1,7 @@
 <template>
     <require from="./hint.css"></require>
-    <p show.bind="hint.length > 0"
-       innerhtml.bind="hint"></p>
+
+    <p class="gameState--${gameStates[gameState]}"
+       innerhtml.bind="gameStates[gameState]"></p>
+
 </template>
