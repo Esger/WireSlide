@@ -1,12 +1,14 @@
+@import 'src/fluid.less';
+
 hint {
     width        : var(--boardSize);
     margin-bottom: 5vmin;
 
     p {
-        font-family   : 'Bungee Hairline';
+        font-family: 'Bungee Hairline';
+        .fluid(font-size, 22px, 44px);
         letter-spacing: 1px;
         color         : lighten(green, 50%);
-        font-size     : 1.5rem;
         text-align    : center;
     }
 }

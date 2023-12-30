@@ -1,0 +1,17 @@
+/*
+ * Mixin for fluid scaling of fonts with mobile default screen widths
+ * Usage: .fluid(font-size, 14px, 16px);
+ * Or:    .fluid(margin, 14px, 16px, 300px, 600px); // min. and max. screen widths
+ */
+@root-font-size: 16px; // Adjust this if your root font size is different
+
+.fluid(@property, @min-value, @max-value, @min-vw: 300, @max-vw: 1200) {
+    @min-value-px: @min-value;
+    @max-value-px: @max-value;
+    @factor      : (1 / (@max-vw - @min-vw)) * (@max-value-px - @min-value-px);
+    @base        : unit((@min-value-px / @root-font-size - @min-vw * @factor / @root-font-size), rem);
+    @slope       : unit((100 * @factor), vw);
+
+    // @{property}: @min-value;  // Fallback niet meer nodig?
+    @{property} :~"clamp(@{min-value}, @{base} + @{slope}, @{max-value})";
+}

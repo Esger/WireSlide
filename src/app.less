@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Bungee+Hairline&family=Bungee+Outline&family=Open+Sans:wght@400;600&display=swap');
+@import 'fluid.less';
 
 body {
     --darkBackground   : #111;
@@ -19,6 +20,7 @@ body {
     color              : var(--lightColor);
     user-select        : none;
     font-family        : 'Open Sans', 'Trebuchet MS', sans-serif;
+    font-size          : @root-font-size;
 }
 
 header {
@@ -28,7 +30,7 @@ header {
     h1 {
         margin     : 0;
         font-family: Bungee Hairline;
-        font-size  : clamp(~'3rem, 4.482vw + 1.132rem, 4rem');
+        .fluid(font-size, 50px, 80px);
         line-height: 1em;
     }
 }
@@ -39,7 +41,7 @@ footer {
     h2 {
         margin     : 0;
         font-family: Bungee Hairline;
-        font-size  : 2em;
+        .fluid(font-size, 24px, 32px);
         line-height: 1em;
 
         a {
