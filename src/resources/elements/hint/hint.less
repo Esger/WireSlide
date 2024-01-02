@@ -1,12 +1,25 @@
+@import 'src/fluid.less';
+
 hint {
-    width: var(--boardSize);
+    width        : var(--boardSize);
+    margin-bottom: 5vmin;
+    text-align   : center;
 
     p {
-        font-family   : 'Bungee Hairline';
-        letter-spacing: 1px;
-        scale         : 1.4;
-        color         : lighten(green, 50%);
-        font-size     : 16px;
-        text-align    : center;
+        font-family: 'Bungee Hairline';
+        .fluid(font-size, 18px, 44px);
+        line-height: 1;
+        color      : lighten(green, 50%);
+        text-shadow: 0 0 1px, 0 0 2px, 0 0 3px;
+
+        &.gameState--1 {
+            color: lighten(green, 50%);
+            .fluid(font-size, 36px, 56px);
+        }
+
+        &.gameState--2 {
+            color: crimson;
+            .fluid(font-size, 36px, 56px);
+        }
     }
 }
