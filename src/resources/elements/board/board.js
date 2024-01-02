@@ -10,6 +10,7 @@ export class Board {
         this._eventAggregator = eventAggregator;
         this._firstBoardSize = 4;
         this._maxBoardSize = 8;
+        this.boardSize = this._firstBoardSize;
         this._oddLevel = this._firstBoardSize % 2 == 1;
         this._straights = ['east-west', 'north-south'];
         this._bends = ['north-east', 'north-west', 'south-east', 'south-west'];
@@ -19,8 +20,14 @@ export class Board {
     attached() {
         this._newGame();
         this._switchSubscription = this._eventAggregator.subscribe('toEmpty', block => this._switchBlocks(block));
-        this._restartSubscription = this._eventAggregator.subscribe('restart', _ => this._newGame());
-        this._restartLevelSubscription = this._eventAggregator.subscribe('restartlevel', _ => this._newGame(this.boardSize));
+        this._restartSubscription = this._eventAggregator.subscribe('restart', _ => {
+            this.boardSize = this._firstBoardSize;
+            this._oddLevel = this._firstBoardSize % 2 == 1;
+            this._newGame();
+        });
+        this._restartLevelSubscription = this._eventAggregator.subscribe('restartlevel', _ => {
+            this._newGame();
+        });
         // if random board has short circuit -> new game
         this._shortCircuitSubscription = this._eventAggregator.subscribe('shortCircuit', _ => {
             if (!this._played) {
@@ -51,9 +58,8 @@ export class Board {
         this._restartLevelSubscription.dispose();
     }
 
-    _newGame(boardSize = this._firstBoardSize) {
+    _newGame() {
         this._played = false;
-        this.boardSize = boardSize;
         document.body.style.setProperty('--blockCount', this.boardSize);
 
         this._fillBoard();
