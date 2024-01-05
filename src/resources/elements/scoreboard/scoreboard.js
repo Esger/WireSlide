@@ -14,7 +14,7 @@ export class Scoreboard {
         this._restartSubscription = this._eventAggregator.subscribe('restart', _ => this._reset());
         this._restartLevelSubscription = this._eventAggregator.subscribe('restartlevel', _ => this._reset());
         this._nextSubscription = this._eventAggregator.subscribe('next', _ => this._reset());
-        this._toEmptySubscription = this._eventAggregator.subscribe('toEmpty', _ => this.moves++);
+        this._toEmptySubscription = this._eventAggregator.subscribe('bump', _ => this.moves++);
         this._ledGroundedSubscription = this._eventAggregator.subscribe('ledGrounded', _ => this.wins++);
     }
 
