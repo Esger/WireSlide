@@ -1,0 +1,48 @@
+@import "./block.less";
+
+block-led {
+    .block;
+
+    &.led {
+        box-shadow: none;
+
+        .mantle {
+            display: none;
+        }
+
+        .wire {
+            --copperColor         : silver;
+            --copperHighlightColor: lighten(silver, 50%);
+            height                : calc(var(--blockSize)*0.10);
+            border-radius         : 0;
+
+            &.wire--elbow {
+                --ledSize       : .55;
+                display         : block;
+                width           : calc(var(--blockSize) * var(--ledSize));
+                height          : calc(var(--blockSize) * var(--ledSize));
+                border-radius   : 1in;
+                background-image: radial-gradient(var(--ledHighlightColor) -40%, var(--ledColor) 90%, #0000 0);
+                box-shadow      : inset 0 0 0 4px green;
+            }
+        }
+
+        &.live .wire:not(.wire--elbow) {
+            --copperColor: mix(#c06205, yellow, 40%);
+        }
+
+        &.grounded {
+            background-color: #111;
+
+            .wire.wire--elbow {
+                background-image: radial-gradient(var(--ledHighlightColor) 35%, var(--ledColor) 90%, #0000 0);
+                box-shadow      : 0 0 calc(var(--blockSize)*.4) 0 var(--ledColor),
+                    0 0 calc(var(--blockSize)*0.6) 0 var(--ledHighlightColor),
+                    0 0 calc(var(--blockSize)*.5) 0 var(--ledHighlightColor),
+                    0 0 calc(var(--blockSize)*0.4) 0 var(--ledHighlightColor),
+                    0 0 calc(var(--blockSize)*.3) 0 var(--ledHighlightColor),
+                    0 0 calc(var(--blockSize)*0.2) 0 var(--ledHighlightColor);
+            }
+        }
+    }
+}
