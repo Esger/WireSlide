@@ -34,36 +34,7 @@ export class BlockCustomElement {
         // listen to echo of bump event from empty block and move this block one spot in direction of empty block 
         this._bumpEchoSubscription = this._eventAggregator.subscribe('bumpEcho', data => this._handleBumpEcho(data.block, data.direction));
 
-        this._connectSubscription = this._eventAggregator.subscribe('connectNeighbours', block => {
-            if (this.block.live) return;
-            if (block.id == this.block.id) return;
-            if (!block.connectingSide) return;
-
-            // get direction false means not a neighbour
-            const neighbourDirection = this._opposites[this._getBumpDirection(block)];
-            if (!neighbourDirection) return;
-
-            const oppositeSide = this._opposites[block.connectingSide];
-            const isConnected = this.block.type.includes(oppositeSide) && oppositeSide == neighbourDirection;
-
-            this.block.live = isConnected;
-            this.block.linkedBlock = block;
-
-            if (!isConnected) return;
-
-            this.block.connectingSide = this._getOtherSide(oppositeSide);
-            this.block.connectedToLed = block.led || block.connectedToLed;
-
-            if (this.block.y == (this.boardSize - 1) && this.block.type.includes('south')) {
-                if (this.block.connectedToLed || this.block.led) {
-                    setTimeout(_ => this._eventAggregator.publish('ledGrounded'), 50);
-                } else {
-                    this.block.shortCircuit();
-                    this._eventAggregator.publish('shortCircuit');
-                }
-            }
-            setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 50);
-        });
+        this._connectSubscription = this._eventAggregator.subscribe('connectNeighbours', block => this._handleConnect(block));
 
         this._groundedSubscription = this._eventAggregator.subscribe('ledGrounded', _ => {
             if (this.block.led) {
@@ -84,6 +55,38 @@ export class BlockCustomElement {
         this._bumpSubscription.dispose();
         this._bumpEchoSubscription.dispose();
     }
+
+    _handleConnect(block) {
+        if (this.block.live) return;
+        if (block.id == this.block.id) return;
+        if (!block.connectingSide) return;
+
+        // get direction false means not a neighbour
+        const neighbourDirection = this._opposites[this._getBumpDirection(block)];
+        if (!neighbourDirection) return;
+
+        const oppositeSide = this._opposites[block.connectingSide];
+        const isConnected = this.block.type.includes(oppositeSide) && oppositeSide == neighbourDirection;
+
+        this.block.live = isConnected;
+        this.block.linkedBlock = block;
+
+        if (!isConnected) return;
+
+        this.block.connectingSide = this._getOtherSide(oppositeSide);
+        this.block.connectedToLed = block.led || block.connectedToLed;
+
+        if (this.block.y == (this.boardSize - 1) && this.block.type.includes('south')) {
+            if (this.block.connectedToLed || this.block.led) {
+                setTimeout(_ => this._eventAggregator.publish('ledGrounded'), 50);
+            } else {
+                this.block.shortCircuit();
+                this._eventAggregator.publish('shortCircuit');
+            }
+        }
+        setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 50);
+    }
+
 
     _handleBumpEcho(block, direction) {
         if (block.id == this.block.id) return;
@@ -107,20 +110,20 @@ export class BlockCustomElement {
 
         if (block.id == this.block.id) return; // it's me
 
-        // propagated bump
-        if (bumpDirection == direction) {
-            this._eventAggregator.publish('bump', {
-                block: this.block,
-                direction: direction
-            });
-            return;
-        }
-
         // first bump from click
         if (direction === undefined) {
             this._eventAggregator.publish('bump', {
                 block: this.block,
                 direction: bumpDirection
+            });
+            return;
+        }
+
+        // propagated bump
+        if (bumpDirection == direction) {
+            this._eventAggregator.publish('bump', {
+                block: this.block,
+                direction: direction
             });
         }
     }

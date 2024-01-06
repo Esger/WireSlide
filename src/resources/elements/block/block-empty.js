@@ -38,5 +38,6 @@ export class BlockEmptyCustomElement extends BlockCustomElement {
         block.x = tempBlock.x;
         block.y = tempBlock.y;
         block.setPosition();
+        this._eventAggregator.publish('move');
     }
 }
