@@ -28,20 +28,19 @@ export class BlockCustomElement {
     attached() {
         this._setPositionStyle();
 
-        // listen to echo of bump event from empty block and move this block one spot in direction of empty block 
-        this._bumpEchoSubscription = this._eventAggregator.subscribe('bumpEcho', data => this._handleBumpEcho(data.block, data.direction));
-
         // listen to bump event
         this._bumpSubscription = this._eventAggregator.subscribe('bump', data => this._handleBump(data.block, data.direction));
 
+        // listen to echo of bump event from empty block and move this block one spot in direction of empty block 
+        this._bumpEchoSubscription = this._eventAggregator.subscribe('bumpEcho', data => this._handleBumpEcho(data.block, data.direction));
+
         this._connectSubscription = this._eventAggregator.subscribe('connectNeighbours', block => {
-            if (this.block.empty || this.block.live) return;
+            if (this.block.live) return;
             if (block.id == this.block.id) return;
             if (!block.connectingSide) return;
 
-            // todo pass in block object
             // get direction false means not a neighbour
-            const neighbourDirection = this._getDirectionIfNeighbour(block);
+            const neighbourDirection = this._opposites[this._getBumpDirection(block)];
             if (!neighbourDirection) return;
 
             const oppositeSide = this._opposites[block.connectingSide];
@@ -83,26 +82,14 @@ export class BlockCustomElement {
         this._groundedSubscription.dispose();
         this._shortCircuitSubscription.dispose();
         this._bumpSubscription.dispose();
-    }
-
-    _switchPosition(block) {
-        const tempBlock = {
-            x: this.block.x,
-            y: this.block.y,
-        };
-        this.block.x = block.x;
-        this.block.y = block.y;
-        this.block.setPosition();
-        block.x = tempBlock.x;
-        block.y = tempBlock.y;
-        block.setPosition();
+        this._bumpEchoSubscription.dispose();
     }
 
     _handleBumpEcho(block, direction) {
         if (block.id == this.block.id) return;
 
         const echoDirection = this._getBumpDirection(block);
-        if (echoDirection == direction) {
+        if (echoDirection === direction) {
             if (!this._isClickTarget) {
                 this._eventAggregator.publish('bumpEcho', {
                     block: this.block,
@@ -110,52 +97,38 @@ export class BlockCustomElement {
                 });
             }
             this._isClickTarget = false;
-            this._switchPosition(block);
         }
     }
 
     //
     _handleBump(block, direction) {
         const bumpDirection = this._getBumpDirection(block);
-        if (!bumpDirection) return; // it's not a neighbour
+        if (bumpDirection === false) return; // it's not a neighbour
 
         if (block.id == this.block.id) return; // it's me
 
         // propagated bump
         if (bumpDirection == direction) {
-            if (this.block.empty) {
-                const reverseDirection = this._opposites[bumpDirection];
-                this._eventAggregator.publish('bumpEcho', {
-                    block: this.block,
-                    direction: reverseDirection
-                });
-            } else {
-                this._eventAggregator.publish('bump', {
-                    block: this.block,
-                    direction: direction
-                });
-            }
+            this._eventAggregator.publish('bump', {
+                block: this.block,
+                direction: direction
+            });
+            return;
         }
 
         // first bump from click
         if (direction === undefined) {
-            if (this.block.empty) {
-                const reverseDirection = this._opposites[bumpDirection];
-                this._eventAggregator.publish('bumpEcho', {
-                    block: this.block,
-                    direction: reverseDirection
-                });
-            } else {
-                this._eventAggregator.publish('bump', {
-                    block: this.block,
-                    direction: bumpDirection
-                });
-            }
+            this._eventAggregator.publish('bump', {
+                block: this.block,
+                direction: bumpDirection
+            });
         }
     }
 
     // returns direction of bump if from adjacent neighbour
     _getBumpDirection(block) {
+        if (block.id == this.block.id) return; // it's me
+
         const dx = this.block.x - block.x;
         const dy = this.block.y - block.y;
         const sameColumn = dx == 0;
@@ -166,32 +139,6 @@ export class BlockCustomElement {
             const verticalDirections = ['north', false, 'south'];
             const bumpDirection = sameColumn ? verticalDirections[dy + 1] : horizontalDirections[dx + 1];
             return bumpDirection;
-        }
-        return false;
-    }
-
-    // returns false or 'direction' (= truthy)
-    _getDirectionIfNeighbour = (block) => {
-        // check out of bounds
-        if (block.x < 0 || block.x >= this.boardSize || block.y < 0 || block.y >= this.boardSize) return false;
-
-        // check for same row
-        if (block.y == this.block.y) {
-            const dx = block.x - this.block.x;
-            if (Math.abs(dx) < 2) {
-                const directions = ['west', false, 'east'];
-                // const directions = ['west', false, 'east'];
-                return directions[dx + 1];
-            } else return false;
-        }
-        // check if for same column
-        if (block.x == this.block.x) {
-            const dy = block.y - this.block.y;
-            if (Math.abs(dy) < 2) {
-                const directions = ['north', false, 'south'];
-                // const directions = ['north', false, 'south'];
-                return directions[dy + 1];
-            } return false
         }
         return false;
     }
