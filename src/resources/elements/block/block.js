@@ -91,7 +91,6 @@ export class BlockCustomElement {
 
         // first bump from click
         if (direction === 'all') {
-            // console.log('firstbump', block.x, block.y, 'thisBlock', this.block.x, this.block.y, 'dir', direction, 'bumpDir', bumpVector.direction);
             this._eventAggregator.publish('bump', {
                 block: this.block,
                 direction: bumpVector.direction
@@ -101,7 +100,6 @@ export class BlockCustomElement {
 
         // propagated bump
         if (bumpVector.direction === direction) {
-            // console.log('bump', block.x, block.y, 'thisBlock', this.block.x, this.block.y, 'dir', direction, 'bumpDir', bumpVector);
             this._eventAggregator.publish('bump', {
                 block: this.block,
                 direction: direction
@@ -174,7 +172,6 @@ export class BlockCustomElement {
 
     bump() {
         if (!this._movingAllowed) return;
-        console.clear();
         this.block.isClickTarget = true;
         this._eventAggregator.publish('bump', { block: this.block, direction: 'all' });
     }

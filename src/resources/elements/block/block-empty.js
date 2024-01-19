@@ -18,22 +18,15 @@ export class BlockEmptyCustomElement extends BlockCustomElement {
         this._bumpStack.push({ block: block, direction: direction, bumpVector: bumpVector });
 
         clearTimeout(this._processStackTimerId);
-        this._processStackTimerId = setTimeout(_ => this._processBumpStack(), 200);
+        this._processStackTimerId = setTimeout(_ => this._processBumpStack(), 50);
     }
 
     _processBumpStack() {
-        console.log('processing stack', console.table(this._bumpStack));
-        // sort stack by distance
-        this._bumpStack.sort((a, b) => a.bumpVector.distance - b.bumpVector.distance);
+        this._bumpStack.sort((a, b) => b.bumpVector.distance - a.bumpVector.distance);
         while (this._bumpStack.length) {
-            const bump = this._bumpStack.shift();
-            // const reverseDirection = this._opposites[bump.bumpVector.direction];
-            if (bump.direction === bump.bumpVector.direction || bump.direction === 'all') {
+            const bump = this._bumpStack.pop();
+            if (bump.direction === bump.bumpVector.direction || bump.direction === 'all')
                 this._switchPosition(bump.block);
-
-                console.log('move', bump.block.x, bump.block.y, 'thisBlock', this.block.x, this.block.y, 'dir', bump.direction, 'bumpDir', bump.bumpVector.direction);
-
-            }
         }
     }
 
