@@ -8,22 +8,32 @@ export class BlockEmptyCustomElement extends BlockCustomElement {
     attached() {
         super.attached();
         this._connectSubscription.dispose();
-        this._bumpEchoSubscription.dispose();
+        this._bumpStack = [];
     }
 
     _handleBump(block, direction) {
-        const bumpDirection = this._getBumpDirection(block);
-        if (bumpDirection === false) return; // it's not a neighbour
+        const bumpVector = this._getBumpVector(block);
+        if (!bumpVector.isCoaxial || bumpVector.fromSelf) return;
 
-        if (block.id == this.block.id) return; // it's me
+        this._bumpStack.push({ block: block, direction: direction, bumpVector: bumpVector });
 
-        if (bumpDirection == direction || direction === undefined) {
-            this._switchPosition(block);
-            const reverseDirection = this._opposites[bumpDirection];
-            this._eventAggregator.publish('bumpEcho', {
-                block: this.block,
-                direction: reverseDirection
-            });
+        clearTimeout(this._processStackTimerId);
+        this._processStackTimerId = setTimeout(_ => this._processBumpStack(), 200);
+    }
+
+    _processBumpStack() {
+        console.log('processing stack', console.table(this._bumpStack));
+        // sort stack by distance
+        this._bumpStack.sort((a, b) => a.bumpVector.distance - b.bumpVector.distance);
+        while (this._bumpStack.length) {
+            const bump = this._bumpStack.shift();
+            // const reverseDirection = this._opposites[bump.bumpVector.direction];
+            if (bump.direction === bump.bumpVector.direction || bump.direction === 'all') {
+                this._switchPosition(bump.block);
+
+                console.log('move', bump.block.x, bump.block.y, 'thisBlock', this.block.x, this.block.y, 'dir', bump.direction, 'bumpDir', bump.bumpVector.direction);
+
+            }
         }
     }
 
