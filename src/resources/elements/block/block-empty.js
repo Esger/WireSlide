@@ -12,13 +12,13 @@ export class BlockEmptyCustomElement extends BlockCustomElement {
     }
 
     _handleBump(block, direction) {
-        const bumpVector = this._getBumpVector(block);
+        const bumpVector = this._getVector(block);
         if (!bumpVector.isCoaxial || bumpVector.fromSelf) return;
 
         this._bumpStack.push({ block: block, direction: direction, bumpVector: bumpVector });
 
         clearTimeout(this._processStackTimerId);
-        this._processStackTimerId = setTimeout(_ => this._processBumpStack(), 50);
+        this._processStackTimerId = setTimeout(_ => this._processBumpStack());
     }
 
     _processBumpStack() {

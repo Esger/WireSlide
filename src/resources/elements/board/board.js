@@ -79,6 +79,8 @@ export class Board {
             block.grounded = false;
             block.isShortCircuited = false;
             block.linkedBlock = null;
+            block.outConnectionSide = undefined;
+            block.inConnectionSide = undefined;
         });
         this.blocks.forEach(block => {
             block.connectIfTopRow();

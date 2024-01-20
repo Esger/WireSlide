@@ -54,61 +54,56 @@ export class BlockCustomElement {
 
     _handleConnect(block) {
         if (this.block.live) return;
-        if (block.id == this.block.id) return;
-        if (!block.connectingSide) return;
+        if (!block.outConnectionSide) return;
 
-        const connectVector = this._opposites[this._getBumpVector(block).direction];
-        if (!connectVector.isNeighbour) return;
+        const connectVector = this._getVector(block);
+        if (!connectVector.isAdjacent) return;
 
-        const oppositeSide = this._opposites[block.connectingSide];
-        const isConnected = this.block.type.includes(oppositeSide) && oppositeSide == connectVector.direction;
-
+        const connectInDirection = this._opposites[block.outConnectionSide];
+        const neededDirection = this._opposites[connectVector.direction];
+        const isConnected = this.block.type.includes(connectInDirection) && connectInDirection == neededDirection;
         this.block.live = isConnected;
-        this.block.linkedBlock = block;
-
         if (!isConnected) return;
 
-        this.block.connectingSide = this._getOtherSide(oppositeSide);
+        this.block.linkedBlock = block;
+
+        this.block.outConnectionSide = this._getOtherConnectingSide(connectInDirection);
         this.block.connectedToLed = block.led || block.connectedToLed;
 
-        if (this.block.y == (this.boardSize - 1) && this.block.type.includes('south')) {
+        const onLastRow = this.block.y == this.boardSize - 1;
+        const grounded = this.block.type.includes('south');
+        if (onLastRow && grounded) {
             if (this.block.connectedToLed || this.block.led) {
                 setTimeout(_ => this._eventAggregator.publish('ledGrounded'), 50);
             } else {
                 this.block.shortCircuit();
                 this._eventAggregator.publish('shortCircuit');
             }
+            return;
         }
-        setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 50);
+        setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 25);
     }
 
     //
     _handleBump(block, direction) {
-        const bumpVector = this._getBumpVector(block);
-        if (bumpVector.fromSelf) return; // it's me
-        if (!bumpVector.isNeighbour) return;
-        if (!bumpVector.isCoaxial) return;
+        const bumpVector = this._getVector(block);
+        if (!bumpVector.isAdjacent) return; // don't bother
 
         // first bump from click
-        if (direction === 'all') {
-            this._eventAggregator.publish('bump', {
-                block: this.block,
-                direction: bumpVector.direction
-            });
-            return;
-        }
+        const fromClick = direction === 'all';
+        const samedirection = bumpVector.direction === direction;
+        const propagatedDirection = fromClick ? bumpVector.direction : samedirection ? direction : false;
+        if (!propagatedDirection) return;
 
-        // propagated bump
-        if (bumpVector.direction === direction) {
-            this._eventAggregator.publish('bump', {
-                block: this.block,
-                direction: direction
-            });
-        }
+        const data = {
+            block: this.block,
+            direction: propagatedDirection
+        };
+        this._eventAggregator.publish('bump', data);
     }
 
     // returns direction, distance and isCoaxial as object
-    _getBumpVector(block) {
+    _getVector(block) {
 
         const fromSelf = block.id === this.block.id;
         const dx = this.block.x - block.x;
@@ -124,26 +119,25 @@ export class BlockCustomElement {
         const normalizedDx = dx == 0 ? 0 : dx / absDx + 1;
         const normalizedDy = dy == 0 ? 0 : dy / absDy + 1;
         const bumpDirection = sameColumn ? verticalDirections[normalizedDy] : horizontalDirections[normalizedDx];
-        const isNeighbour = isCoaxial && absDistance === 1;
+        const isAdjacent = isCoaxial && absDistance === 1;
 
         const bumpVector = {
             fromSelf: fromSelf,
             isCoaxial: isCoaxial,
-            isNeighbour: isNeighbour,
+            isAdjacent: isAdjacent,
             direction: bumpDirection,
             distance: absDistance,
         }
         return bumpVector;
     }
 
-    // returns 'direction' of other connection
-    _getOtherSide = direction => {
+    // returns 'direction' of other connecting side
+    _getOtherConnectingSide = inSide => {
         if (this.empty) return;
         const directions = this.block.type.split('-');
-        const directionIndex = directions.indexOf(direction);
-        if (directionIndex == -1) return;
-        const otherDirection = directions[(directionIndex + 1) % 2];
-        return otherDirection;
+        const outSide = directions.filter(side => side !== inSide);
+
+        return outSide;
     }
 
     _setPositionStyle = _ => {
@@ -156,13 +150,13 @@ export class BlockCustomElement {
     }
 
     _connectIfTopRow = () => {
-        if (this.block.y == 0 && !this.block.empty) {
-            this.block.live = this.block.type.includes('north');
-            if (this.block.live) {
-                this.block.connectingSide = this._getOtherSide('north');
-                setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 300);
-            }
-        }
+        if (this.block.y != 0 || this.block.empty) return;
+
+        this.block.live = this.block.type.includes('north');
+        if (!this.block.live) return;
+
+        this.block.outConnectionSide = this._getOtherConnectingSide('north');
+        setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 300);
     }
 
     _shortCircuit = () => {
@@ -172,7 +166,6 @@ export class BlockCustomElement {
 
     bump() {
         if (!this._movingAllowed) return;
-        this.block.isClickTarget = true;
         this._eventAggregator.publish('bump', { block: this.block, direction: 'all' });
     }
 }
