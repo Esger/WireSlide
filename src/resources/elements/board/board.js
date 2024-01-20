@@ -19,7 +19,11 @@ export class Board {
 
     attached() {
         this._newGame();
-        this._switchSubscription = this._eventAggregator.subscribe('toEmpty', block => this._switchBlocks(block));
+        this._switchSubscription = this._eventAggregator.subscribe('bump', _ => {
+            this._played = true;
+            clearTimeout(this.buildTimeout);
+            this.buildTimeout = setTimeout(_ => this._buildConnections(), 10);
+        });
         this._restartSubscription = this._eventAggregator.subscribe('restart', _ => {
             this.boardSize = this._firstBoardSize;
             this._oddLevel = this._firstBoardSize % 2 == 1;
@@ -68,24 +72,6 @@ export class Board {
         }, 300);
     }
 
-    _switchBlocks(block) {
-        this._played = true;
-        const emptyBlock = this.blocks.find(b => b.empty);
-        if (block.isNeighbour(emptyBlock.x, emptyBlock.y)) {
-            const tempBlock = {
-                x: emptyBlock.x,
-                y: emptyBlock.y,
-            };
-            emptyBlock.x = block.x;
-            emptyBlock.y = block.y;
-            emptyBlock.setPosition();
-            block.x = tempBlock.x;
-            block.y = tempBlock.y;
-            block.setPosition();
-        }
-        this._buildConnections();
-    }
-
     _buildConnections() {
         this.blocks.forEach(block => {
             block.live = false;
@@ -93,6 +79,8 @@ export class Board {
             block.grounded = false;
             block.isShortCircuited = false;
             block.linkedBlock = null;
+            block.outConnectionSide = undefined;
+            block.inConnectionSide = undefined;
         });
         this.blocks.forEach(block => {
             block.connectIfTopRow();
