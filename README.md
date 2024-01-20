@@ -1,4 +1,6 @@
-# `Aurelia-new`
+# `Wire-slide`
+
+See ashware.nl/wireslide
 
 This project is bootstrapped by [aurelia-cli](https://github.com/aurelia/cli).
 
