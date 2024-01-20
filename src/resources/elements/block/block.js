@@ -19,45 +19,19 @@ export class BlockCustomElement {
 
     bind() {
         this.block.live = false;
-        this.block.isNeighbour = this._getDirectionIfNeighbour;
-        this.block.setPosition = this._setPosition;
+        this.block.setPosition = this._setPositionStyle;
         this.block.connectIfTopRow = this._connectIfTopRow;
         this.block.shortCircuit = this._shortCircuit;
         this._movingAllowed = true;
     }
 
     attached() {
-        this._setPosition();
-        this._connectSubscription = this._eventAggregator.subscribe('connectNeighbours', block => {
-            if (this.block.empty || this.block.live) return;
-            if (block.id == this.block.id) return;
-            if (!block.connectingSide) return;
+        this._setPositionStyle();
 
-            // get direction false means not a neighbour
-            const neighbourDirection = this._getDirectionIfNeighbour(block.x, block.y);
-            if (!neighbourDirection) return;
+        // listen to bump event
+        this._bumpSubscription = this._eventAggregator.subscribe('bump', data => this._handleBump(data.block, data.direction));
 
-            const oppositeSide = this._opposites[block.connectingSide];
-            const isConnected = this.block.type.includes(oppositeSide) && oppositeSide == neighbourDirection;
-
-            this.block.live = isConnected;
-            this.block.linkedBlock = block;
-
-            if (!isConnected) return;
-
-            this.block.connectingSide = this._getOtherSide(oppositeSide);
-            this.block.connectedToLed = block.led || block.connectedToLed;
-
-            if (this.block.y == (this.boardSize - 1) && this.block.type.includes('south')) {
-                if (this.block.connectedToLed || this.block.led) {
-                    setTimeout(_ => this._eventAggregator.publish('ledGrounded'), 50);
-                } else {
-                    this.block.shortCircuit();
-                    this._eventAggregator.publish('shortCircuit');
-                }
-            }
-            setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 50);
-        });
+        this._connectSubscription = this._eventAggregator.subscribe('connectNeighbours', block => this._handleConnect(block));
 
         this._groundedSubscription = this._eventAggregator.subscribe('ledGrounded', _ => {
             if (this.block.led) {
@@ -75,45 +49,98 @@ export class BlockCustomElement {
         this._connectSubscription.dispose();
         this._groundedSubscription.dispose();
         this._shortCircuitSubscription.dispose();
+        this._bumpSubscription.dispose();
     }
 
-    // returns false or 'direction' (= truthy)
-    _getDirectionIfNeighbour = (x, y) => {
-        // check out of bounds
-        if (x < 0 || x >= this.boardSize || y < 0 || y >= this.boardSize) return false;
+    _handleConnect(block) {
+        if (this.block.live) return;
+        if (!block.outConnectionSide) return;
 
-        // check for same row
-        if (y == this.block.y) {
-            const dx = x - this.block.x;
-            if (Math.abs(dx) < 2) {
-                const directions = ['west', false, 'east'];
-                // const directions = ['west', false, 'east'];
-                return directions[dx + 1];
-            } else return false;
+        const connectVector = this._getVector(block);
+        if (!connectVector.isAdjacent) return;
+
+        const connectInDirection = this._opposites[block.outConnectionSide];
+        const neededDirection = this._opposites[connectVector.direction];
+        const isConnected = this.block.type.includes(connectInDirection) && connectInDirection == neededDirection;
+        this.block.live = isConnected;
+        if (!isConnected) return;
+
+        this.block.linkedBlock = block;
+
+        this.block.outConnectionSide = this._getOtherConnectingSide(connectInDirection);
+        this.block.connectedToLed = block.led || block.connectedToLed;
+
+        const onLastRow = this.block.y == this.boardSize - 1;
+        const grounded = this.block.type.includes('south');
+        if (onLastRow && grounded) {
+            if (this.block.connectedToLed || this.block.led) {
+                setTimeout(_ => this._eventAggregator.publish('ledGrounded'), 50);
+            } else {
+                this.block.shortCircuit();
+                this._eventAggregator.publish('shortCircuit');
+            }
+            return;
         }
-        // check if for same column
-        if (x == this.block.x) {
-            const dy = y - this.block.y;
-            if (Math.abs(dy) < 2) {
-                const directions = ['north', false, 'south'];
-                // const directions = ['north', false, 'south'];
-                return directions[dy + 1];
-            } return false
-        }
-        return false;
+        setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 25);
     }
 
-    // returns 'direction'
-    _getOtherSide = direction => {
+    //
+    _handleBump(block, direction) {
+        const bumpVector = this._getVector(block);
+        if (!bumpVector.isAdjacent) return; // don't bother
+
+        // first bump from click
+        const fromClick = direction === 'all';
+        const samedirection = bumpVector.direction === direction;
+        const propagatedDirection = fromClick ? bumpVector.direction : samedirection ? direction : false;
+        if (!propagatedDirection) return;
+
+        const data = {
+            block: this.block,
+            direction: propagatedDirection
+        };
+        this._eventAggregator.publish('bump', data);
+    }
+
+    // returns direction, distance and isCoaxial as object
+    _getVector(block) {
+
+        const fromSelf = block.id === this.block.id;
+        const dx = this.block.x - block.x;
+        const dy = this.block.y - block.y;
+        const sameColumn = dx == 0;
+        const sameRow = dy == 0;
+        const isCoaxial = sameColumn || sameRow;
+        const absDx = Math.abs(dx);
+        const absDy = Math.abs(dy);
+        const absDistance = absDx + absDy;
+        const horizontalDirections = ['west', false, 'east'];
+        const verticalDirections = ['north', false, 'south'];
+        const normalizedDx = dx == 0 ? 0 : dx / absDx + 1;
+        const normalizedDy = dy == 0 ? 0 : dy / absDy + 1;
+        const bumpDirection = sameColumn ? verticalDirections[normalizedDy] : horizontalDirections[normalizedDx];
+        const isAdjacent = isCoaxial && absDistance === 1;
+
+        const bumpVector = {
+            fromSelf: fromSelf,
+            isCoaxial: isCoaxial,
+            isAdjacent: isAdjacent,
+            direction: bumpDirection,
+            distance: absDistance,
+        }
+        return bumpVector;
+    }
+
+    // returns 'direction' of other connecting side
+    _getOtherConnectingSide = inSide => {
         if (this.empty) return;
         const directions = this.block.type.split('-');
-        const directionIndex = directions.indexOf(direction);
-        if (directionIndex == -1) return;
-        const otherDirection = directions[(directionIndex + 1) % 2];
-        return otherDirection;
+        const outSide = directions.filter(side => side !== inSide);
+
+        return outSide;
     }
 
-    _setPosition = () => {
+    _setPositionStyle = _ => {
         const boardStyles = window.getComputedStyle(this._element.parentElement);
         const blockSize = boardStyles.getPropertyValue('--blockSize');
         this.position = {
@@ -123,20 +150,22 @@ export class BlockCustomElement {
     }
 
     _connectIfTopRow = () => {
-        if (this.block.y == 0 && !this.block.empty) {
-            this.block.live = this.block.type.includes('north');
-            if (this.block.live) {
-                this.block.connectingSide = this._getOtherSide('north');
-                setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 300);
-            }
-        }
+        if (this.block.y != 0 || this.block.empty) return;
+
+        this.block.live = this.block.type.includes('north');
+        if (!this.block.live) return;
+
+        this.block.outConnectionSide = this._getOtherConnectingSide('north');
+        setTimeout(_ => this._eventAggregator.publish('connectNeighbours', this.block), 300);
     }
 
     _shortCircuit = () => {
         this.block.isShortCircuited = true;
         this.block.linkedBlock?.shortCircuit();
     }
-    toEmpty() {
-        if (this._movingAllowed) this._eventAggregator.publish('toEmpty', this.block);
+
+    bump() {
+        if (!this._movingAllowed) return;
+        this._eventAggregator.publish('bump', { block: this.block, direction: 'all' });
     }
 }

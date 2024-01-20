@@ -1,10 +1,10 @@
-<template class="block ${block.type}
+<template class="block led ${block.type}
                 ${block.live ? 'live' : ''} 
                 ${block.grounded ? 'grounded' : ''} 
                 ${block.isShortCircuited ? 'shortCircuited' : ''}"
           css.bind="position"
           click.trigger="bump()">
-    <require from="./block.css"></require>
+    <require from="./block-led.css"></require>
     <div class="rotator">
 
         <div class="wire wire--full">
