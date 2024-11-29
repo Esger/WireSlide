@@ -30,7 +30,7 @@ export class Board {
             this._newGame();
         });
         this._restartLevelSubscription = this._eventAggregator.subscribe('restartlevel', _ => {
-            this._newGame();
+            this._sameGame();
         });
         // if random board has short circuit -> new game
         this._shortCircuitSubscription = this._eventAggregator.subscribe('shortCircuit', _ => {
@@ -67,6 +67,14 @@ export class Board {
         document.body.style.setProperty('--blockCount', this.boardSize);
 
         this._fillBoard();
+        setTimeout(_ => {
+            this._buildConnections();
+        }, 300);
+    }
+
+    _sameGame() {
+        this._played = false;
+        this.blocks = structuredClone(this._initialBlocks);
         setTimeout(_ => {
             this._buildConnections();
         }, 300);
@@ -142,5 +150,6 @@ export class Board {
                 this.blocks.push(block);
             }
         }
+        this._initialBlocks = structuredClone(this.blocks);
     }
 }
