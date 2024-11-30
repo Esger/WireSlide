@@ -7,6 +7,7 @@ export class SoundCustomElement {
     constructor(element, eventAggregator) {
         this._element = element;
         this._eventAggregator = eventAggregator;
+        this.soundOn = true;
         this.sounds = [
             {
                 name: 'slide',
@@ -28,10 +29,14 @@ export class SoundCustomElement {
     }
 
     attached() {
-        this.addSubscriptions();
+        this._addSubscriptions();
     }
 
-    addSubscriptions = _ => {
+    toggleSound() {
+        this.soundOn = !this.soundOn;
+    }
+
+    _addSubscriptions = _ => {
         this._bumpSubscription?.dispose();
         this._slideSubscription?.dispose();
         this._bumpSubscription = this._eventAggregator.subscribeOnce('bumpSound', _ => this._playSound('bump'));
@@ -46,12 +51,13 @@ export class SoundCustomElement {
     }
 
     _playSound(name) {
+        clearTimeout(this.timeOutHandle);
+        this.timeOutHandle = setTimeout(this._addSubscriptions, 500);
+        if (!this.soundOn) return;
         const sound = this._element.querySelector('.' + name);
         console.log(this._getVolume(name));
         sound.volume = this._getVolume(name);
         sound?.play();
-        clearTimeout(this.timeOutHandle);
-        this.timeOutHandle = setTimeout(this.addSubscriptions, 500);
     }
 
     detached() {
