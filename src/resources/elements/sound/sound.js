@@ -9,32 +9,36 @@ export class SoundCustomElement {
         this._eventAggregator = eventAggregator;
         this.sounds = [
             'slide',
-            'bump'
+            'bump',
+            'short-circuit'
         ];
-        this.addBumpSubscription();
     }
 
     attached() {
-        this.sounds.forEach(sound => {
-            this._element.querySelector('.' + sound)?.addEventListener('load', _ => this.addBumpSubscription(), { once: true });
-        });
+        this.addSubscriptions();
+
     }
 
-    addBumpSubscription = _ => {
+    addSubscriptions = _ => {
         this._bumpSubscription?.dispose();
         this._slideSubscription?.dispose();
         this._bumpSubscription = this._eventAggregator.subscribeOnce('bumpSound', _ => this._playSound('bump'));
         this._slideSubscription = this._eventAggregator.subscribeOnce('slideSound', _ => this._playSound('slide'));
+        this._shortCircuitSubscription ||= this._eventAggregator.subscribe('shortCircuit', _ => this._playSound('short-circuit'));
     }
 
     _playSound(name) {
-        this._element.querySelector('.' + name)?.play();
+        const sound = this._element.querySelector('.' + name);
+        if (name === 'bump') sound.volume = .5;
+        if (name === 'short-circuit') sound.volume = .5;
+        sound?.play();
         clearTimeout(this.timeOutHandle);
-        this.timeOutHandle = setTimeout(this.addBumpSubscription, 500);
+        this.timeOutHandle = setTimeout(this.addSubscriptions, 500);
     }
 
     detached() {
-        this._bumpSubscription.dispose();
-        this._slideSubscription.dispose();
+        this._bumpSubscription?.dispose();
+        this._slideSubscription?.dispose();
+        this._shortCircuitSubscription?.dispose();
     }
 }
