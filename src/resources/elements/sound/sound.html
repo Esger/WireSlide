@@ -2,6 +2,6 @@
     <require from="./sound.css"></require>
 
     <audio repeat.for="sound of sounds"
-           class="${sound} sound"
-           src.bind="'assets/' + sound + '.wav'"></audio>
+           class="${sound.name} sound"
+           src.bind="'assets/' + sound.name + '.wav'"></audio>
 </template>
