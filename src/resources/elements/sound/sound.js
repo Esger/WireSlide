@@ -8,16 +8,27 @@ export class SoundCustomElement {
         this._element = element;
         this._eventAggregator = eventAggregator;
         this.sounds = [
-            'slide',
-            'bump',
-            'short-circuit',
-            'connected'
+            {
+                name: 'slide',
+                volume: 1
+            },
+            {
+                name: 'bump',
+                volume: .5
+            },
+            {
+                name: 'short-circuit',
+                volume: .1
+            },
+            {
+                name: 'connected',
+                volume: .1
+            }
         ];
     }
 
     attached() {
         this.addSubscriptions();
-
     }
 
     addSubscriptions = _ => {
@@ -29,10 +40,15 @@ export class SoundCustomElement {
         this._ledGroundedSubscription ||= this._eventAggregator.subscribe('ledGrounded', _ => this._playSound('connected'));
     }
 
+    _getVolume(name) {
+        const sound = this.sounds.find(sound => sound.name === name);
+        return sound ? sound.volume : 1;
+    }
+
     _playSound(name) {
         const sound = this._element.querySelector('.' + name);
-        if (name === 'bump') sound.volume = .5;
-        if (name === 'short-circuit') sound.volume = .5;
+        console.log(this._getVolume(name));
+        sound.volume = this._getVolume(name);
         sound?.play();
         clearTimeout(this.timeOutHandle);
         this.timeOutHandle = setTimeout(this.addSubscriptions, 500);
