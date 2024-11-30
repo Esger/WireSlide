@@ -94,7 +94,7 @@ export class BlockCustomElement {
         const samedirection = bumpVector.direction === direction;
         const propagatedDirection = fromClick ? bumpVector.direction : samedirection ? direction : false;
         if (!propagatedDirection) return;
-
+        // propagated bump
         const data = {
             block: this.block,
             direction: propagatedDirection

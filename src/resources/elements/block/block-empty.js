@@ -22,12 +22,19 @@ export class BlockEmptyCustomElement extends BlockCustomElement {
     }
 
     _processBumpStack() {
+        let slid = false;
         this._bumpStack.sort((a, b) => b.bumpVector.distance - a.bumpVector.distance);
         while (this._bumpStack.length) {
             const bump = this._bumpStack.pop();
-            if (bump.direction === bump.bumpVector.direction || bump.direction === 'all')
+            if (bump.direction === bump.bumpVector.direction || bump.direction === 'all') {
                 this._switchPosition(bump.block);
+                if (bump.direction === 'all') {
+                    this._eventAggregator.publish('slideSound');
+                    slid = true;
+                }
+            }
         }
+        if (!slid) this._eventAggregator.publish('bumpSound');
     }
 
     _switchPosition(block) {

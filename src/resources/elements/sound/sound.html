@@ -1,0 +1,7 @@
+<template>
+    <require from="./sound.css"></require>
+
+    <audio repeat.for="sound of sounds"
+           class="${sound} sound"
+           src.bind="'assets/' + sound + '.wav'"></audio>
+</template>
