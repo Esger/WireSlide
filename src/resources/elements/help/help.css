@@ -13,6 +13,11 @@ help {
         background-color: var(--backgroundColor);
         border          : none;
 
+        @media screen and (max-width: 600px) {
+            top   : auto;
+            bottom: 0;
+        }
+
         svg {
             color: var(--mainColor);
         }
