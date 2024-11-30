@@ -1,0 +1,114 @@
+help {
+    --time           : 0.5s;
+    --backgroundColor: var(--darkBackground);
+    --mainColor      : --lightColor;
+
+    button.open,
+    button.close {
+        font-size       : 2rem;
+        position        : absolute;
+        right           : 0;
+        top             : 0;
+        height          : 4rem;
+        background-color: var(--backgroundColor);
+        border          : none;
+
+        svg {
+            color: var(--mainColor);
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+        h2 {
+            font-family: 'Bungee Inline', sans-serif;
+            font-size  : 2.5rem;
+        }
+    }
+
+    h2 {
+        text-align: left;
+    }
+
+    ul {
+        max-width: 55ch;
+        margin   : 0 auto;
+        padding  : 0;
+        font-size: 1.5rem;
+    }
+
+    li {
+        line-height: 2.4rem;
+        margin-top : 1rem;
+        position   : relative;
+
+        p {
+            font-family  : 'Bungee Inline';
+            margin-inline: auto;
+            width        : max-content;
+            margin-top   : 1rem;
+
+            l {
+                display: inline-block;
+                width  : 1ch;
+            }
+        }
+    }
+
+    svg {
+        display       : inline-block;
+        vertical-align: text-bottom;
+    }
+
+    /*   Open state of the dialog  */
+    dialog[open] {
+        opacity  : 1;
+        transform: rotate(0deg);
+    }
+
+    /*   Closed state of the dialog   */
+    dialog {
+        position        : fixed;
+        top             : 0;
+        left            : 0;
+        width           : 100vw;
+        height          : 100dvh;
+        padding         : 3rem;
+        max-width       : none;
+        max-height      : none;
+        background-color: var(--backgroundColor);
+        color           : var(--mainColor);
+        opacity         : 0;
+        transform-origin: calc(100% - 2.3rem) 2.3rem;
+        transform       : rotate(145deg);
+        transition      :
+            opacity var(--time) ease-out,
+            transform var(--time) ease-in,
+            overlay var(--time) ease-out allow-discrete,
+            display var(--time) ease-out allow-discrete;
+        /* Equivalent to
+      transition: all var(--time) allow-discrete; */
+    }
+
+    /*   Before-open state  */
+    /* Needs to be after the previous dialog[open] rule to take effect,
+        as the specificity is the same */
+
+    @starting-style {
+        dialog[open] {
+            opacity  : 0;
+            transform: rotate(145deg);
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+        h2 {
+            font-family: 'Bungee Inline', sans-serif;
+            font-size  : 2.5rem;
+        }
+
+        li {
+            font-size  : 1.4rem;
+            line-height: 2rem;
+        }
+    }
+}
