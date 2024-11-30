@@ -10,7 +10,8 @@ export class SoundCustomElement {
         this.sounds = [
             'slide',
             'bump',
-            'short-circuit'
+            'short-circuit',
+            'connected'
         ];
     }
 
@@ -25,6 +26,7 @@ export class SoundCustomElement {
         this._bumpSubscription = this._eventAggregator.subscribeOnce('bumpSound', _ => this._playSound('bump'));
         this._slideSubscription = this._eventAggregator.subscribeOnce('slideSound', _ => this._playSound('slide'));
         this._shortCircuitSubscription ||= this._eventAggregator.subscribe('shortCircuit', _ => this._playSound('short-circuit'));
+        this._ledGroundedSubscription ||= this._eventAggregator.subscribe('ledGrounded', _ => this._playSound('connected'));
     }
 
     _playSound(name) {
@@ -40,5 +42,6 @@ export class SoundCustomElement {
         this._bumpSubscription?.dispose();
         this._slideSubscription?.dispose();
         this._shortCircuitSubscription?.dispose();
+        this._ledGroundedSubscription?.dispose();
     }
 }
