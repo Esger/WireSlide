@@ -94,16 +94,6 @@ help {
       transition: all var(--time) allow-discrete; */
     }
 
-    /*   Before-open state  */
-    /* Needs to be after the previous dialog[open] rule to take effect,
-        as the specificity is the same */
-
-    @starting-style {
-        dialog[open] {
-            opacity  : 0;
-            transform: rotate(145deg);
-        }
-    }
 
     @media screen and (max-width: 600px) {
         h2 {
@@ -115,5 +105,12 @@ help {
             font-size  : 1.4rem;
             line-height: 2rem;
         }
+    }
+}
+
+@starting-style {
+    help dialog[open] {
+        opacity  : 0;
+        transform: rotate(145deg);
     }
 }
